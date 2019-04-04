@@ -498,9 +498,9 @@ div.message.hidden {
 }
 
 .content h3 {
-    color: #be140b;
     padding-bottom: 0.5rem;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    font-size: 1rem;
 }
 
 .content h4 {
@@ -521,4 +521,178 @@ div.message.hidden {
 table td {
     vertical-align: top;
     word-break: break-all;
+}
+
+.trashbin input[type=checkbox] {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    -webkit-appearance: none;
+    outline: 0;
+}
+
+.trashbin input[type=checkbox]:checked {
+    background-image: url('data:image/svg+xml;utf8,<svg width="105mm" height="148mm" version="1.1" viewBox="0 0 370 5.5e+002" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0,-530)" fill="#d6032a" fill-rule="evenodd" stroke="#000"><rect transform="matrix(.71 -.71 .67 .75 0 0)" x="-600" y="670" width="420" height="56" stroke-width="1.15px"/><rect transform="matrix(.7 .71 -.67 .74 0 0)" x="470" y="400" width="410" height="55" stroke-width="1.1px"/></g></svg>');
+}
+
+.trashbin input[type=checkbox]:not(:checked) {
+    background-image: url('data:image/svg+xml;utf8,<svg width="105mm" height="148mm" version="1.1" viewBox="0 0 372 524" xmlns="http://www.w3.org/2000/svg"><g transform="translate(13,65)"><path d="m10 80h309l-34 295-211 5z" fill="#00b1ae" fill-rule="evenodd" stroke-width="1px"/><g fill="none" stroke="#000"><path d="m75 118 41 207" stroke-width="1px"/><path d="m170 137l14 183" stroke-width="1px"/><path d="m259 113-31 202" stroke-width="1.21px"/><path d="m10 80l315-71" stroke-width="5"/><path d="m104 59c33.145-75.209 124-28 124-28" stroke-width="5px"/></g></g></svg>');
+}
+
+table tr td input, table tr td select {
+    margin: 6px 5px !important
+}
+
+table tr, table tr td {
+    padding: 0 2px 0 2px
+}
+
+table tr td button.plus, table tr td a.plus {
+    border-radius: 50%;
+    margin-bottom: 0; 
+    font-size:54px; 
+    line-height: 24px;
+    height: 43px;
+    width: 44px;
+    padding: 10px 6px; 
+}
+
+table tr.plusline {
+    background-color: #fff;
+    border-bottom: none;
+}
+
+table tr.plusline td {
+    padding-top: 5px
+}
+
+.contest h1, .contest h2 {
+  font-size: 1.5rem
+}
+
+.pricebox {
+  height: 138px;
+  width: 158px;
+  padding: 20px;
+  text-align: center;
+  display: inline-block;
+  margin: 50px 0 20px 30px;
+  vertical-align: top;
+  background-color: gold;
+  background-image: linear-gradient(to bottom right, gold, goldenrod);
+  box-shadow: 18px -10px goldenrod;
+  border: goldenrod 1px solid;
+}
+
+#price2 {
+  background-color: lightgrey;
+  background-image: linear-gradient(to bottom right, whitesmoke, silver);
+  box-shadow: 18px -10px silver;
+  border: silver 1px solid;
+}
+
+#price3 {
+  background-color: NavajoWhite;
+  background-image: linear-gradient(to bottom right, NavajoWhite, darksalmon);
+  box-shadow: 18px -10px darksalmon;
+  border: darksalmon 1px solid;
+}
+
+.pricecaption {
+  left: 1rem
+}
+
+.up {
+  margin-top: 20px;
+}
+
+@media only screen and (max-width: 64em) { 
+  .pricebox {
+      width: 90px;
+     height: 80px;
+     margin-right: 0;
+  }
+}
+
+.formpanel {
+  display: table;
+  width: 100%;
+}
+
+.formpanel .input {
+  display: table-row
+}
+
+.formpanel .input label {
+  display: table-cell;
+  min-width: 7rem;
+  width: 25%;
+}
+
+.participants caption {
+  text-align: left
+}
+
+.col_delete {
+  width: 35px
+}
+
+.formpanel .input label, .formpanel .input input {
+  display: table-cell
+}
+
+#contest-number-of-prices {
+  width: 25%
+}
+
+.trophy1 {
+  width: 120px
+}
+
+.trophy2 {
+  width: 100px;
+  margin-top: 20px;
+}
+
+.contest.form button[type="submit"] {
+  float: inherit
+}
+
+.contest.form input {
+  margin-bottom: 0.2rem;
+}
+
+.formpanel.prices label {
+  text-align: right;
+  padding-right: 0.5rem;
+  font-size: 90%;
+}
+
+.formpanel.prices input {
+  height: 1.5rem
+}
+
+.example1 legend {
+  margin-bottom: 0.4rem
+}
+
+.example1 .input, .example1 .container {
+  margin-bottom: 1.5rem
+}
+
+.example1 table .input {
+  margin-bottom: 0
+}
+
+.input .error-message {
+  margin-bottom: 0;
+  padding: 0 0.5625rem;
+  word-break: normal;
+}
+
+body, h1, h2, h3, h4, h5, h6, .top-bar-section ul li a {
+  font-family: Verdana, Arial, Helvetica, Sans-serif
 }
