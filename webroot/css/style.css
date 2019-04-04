@@ -614,6 +614,7 @@ table tr.plusline td {
       width: 90px;
      height: 80px;
      margin-right: 0;
+     margin-left: 14px;
   }
 }
 
