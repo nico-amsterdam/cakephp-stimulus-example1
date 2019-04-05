@@ -529,23 +529,21 @@ table td {
 
 .trashbin input[type=checkbox] {
     display: block;
-    width: 20px;
-    height: 30px;
+    width: 30px;
+    height: 35px;
     background-repeat: no-repeat;
     background-position: center center;
-    background-size: 30px 40px;
+    background-size: 30px 45px;
     -webkit-appearance: none;
     outline: 0;
 }
 
 .trashbin .checkbox:hover {
   filter: sepia(100%);
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 .trashbin input[type=checkbox]::-ms-check {
-  color: red;
-  background-color: lightgrey;
   opacity: 0;
 }
 

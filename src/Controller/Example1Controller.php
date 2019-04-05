@@ -14,11 +14,27 @@ use Cake\Event\Event;
  */
 class Example1Controller extends AppController
 {
-    use LogTrait;
+  use LogTrait;
+
+  private function getNewParticipant(int $index) {
+    return [
+             'id' => $index,
+             'name' => '',
+             'email' => '',
+             'date_of_birth' => '',
+             'mark_for_deletion' => 0,
+             'dynnew' => 0
+           ];
+  }
+
+  private function newExample1Form(int $number_of_participants) {
+     return new Example1Form(0, max(1,$number_of_participants));
+  }
 
   public function beforeFilter(Event $event)
   {
      if (isset($this->request)) {
+        $dateType = $this->getDateType();
         $number_of_participants = count($this->request->getData('contest.participants'));
         $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
         $this->log('NEW ' . $this->request->getData('contest.participants.0.dynnew') . ' COUNT ' . $number_of_participants, 'debug');
@@ -49,51 +65,61 @@ class Example1Controller extends AppController
     public function index()
     {
        $number_of_participants = count($this->request->getData('contest.participants'));
-       $example1 = new Example1Form(0, 1); // $number_of_participants);
+       $example1 = $this->newExample1Form($number_of_participants);
        if ($this->request->is('post')) {
-          // $isValid = $example1->validate($this->request->getData());
-         // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
+          $action = $this->request->getData('action');
           $example1->setData($this->request->getData());
           if ($example1->execute($this->request->getData())) {
              $this->Flash->success(__('Succes!'));
+             $data = $example1->getData();
+             $newParticipants = [];
+             if ($number_of_participants > 0) {
+                foreach ($data['contest']['participants'] as $key => $participant) {
+                   if ($participant['mark_for_deletion'] == 1) {
+                      $number_of_participants -= 1;
+                   } else {
+                      $participant['id'] = count($newParticipants);
+                      $newParticipants[] = $participant;
+                   }
+                }
+                $data['contest']['participants'] = $newParticipants;
+             }
+             if ($number_of_participants <= 0) {
+                // minimum one participant in the table. Add new record:
+                $data['contest']['participants'] = [ $this->getNewParticipant(0) ];
+                $number_of_participants = 1;
+             } else if ($action == 'addParticipant') {
+                $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants);
+                $number_of_participants += 1;
+             }
+             $example1 = $this->newExample1Form($number_of_participants);
+             $example1->setData($data);
+             // $this->set([$example1->getData()]);
+             $this->request = $this->request->withParsedBody($data);
+             $this->log('DATA3 ' . print_r( $example1->getData(), true), 'debug');
           } else {
+             // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
+             $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
              $this->Flash->error(__('There was a problem submitting your form.'));
           }
        }
        if ($this->request->is('get')) {
           $example1->setData([
              'contest' => [
-               'name' => 'Best actor',
-               'number_of_prices' => '2',
-               'price1' => 'free tickets',
+               'name' => '',
+               'number_of_prices' => '1',
+               'price1' => '',
                'price2' => '',
-               'price3' => '10 dollar',
+               'price3' => '',
                'participants' => [
-                 [
-                   'id' => 0,
-                   'name' => 'John Doe',
-                   'email' => 'john.doe@example.com',
-                   'date_of_birth' => '2018-02-28',
-                   'mark_for_deletion' => 0,
-                   'dynnew' => 1
-                 ],
-                 [
-                   'id' => 0,
-                   'name' => 'John Doe',
-                   'email' => 'john.doe@example.com',
-                   'date_of_birth' => '2018-02-28',
-                   'mark_for_deletion' => 0,
-                   'dynnew' => 1
-                 ]
-               ]
+                   $this->getNewParticipant(0)
+               ],
               ],
           ]);
-          // $this->log('GET DATA ' . print_r( $example1->getData('contest.participants'), true), 'debug');
           // $this->log('GET DATA2 ' . print_r( $example1->getData(), true), 'debug');
        }
        $this->Security->setConfig('unlockedFields', []);
-   //    $this->set('contest', $example1->getContestForm());
-   //    $this->set('participants', $example1->getData( 'contest.participants'));
+       $this->set('dateType', $this->getDateType());
        $this->set('example1', $example1);
     }
 
@@ -103,83 +129,4 @@ class Example1Controller extends AppController
         return $isMSIE ? 'date' : 'datepicker';
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Example id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $example1 = $this->Example1->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('example', $example1);
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $example1 = $this->Example1->newEntity();
-        if ($this->request->is('post')) {
-            $example1 = $this->Example1->patchEntity($example1, $this->request->getData());
-            if ($this->Example1->save($example1)) {
-                $this->Flash->success(__('The example has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The example could not be saved. Please, try again.'));
-        }
-        $this->set(compact('example'));
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Example id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $example1 = $this->Example1->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $example1 = $this->Example1->patchEntity($example1, $this->request->getData());
-            if ($this->Example1->save($example1)) {
-                $this->Flash->success(__('The example has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The example could not be saved. Please, try again.'));
-        }
-        $this->set(compact('example'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Example id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $example1 = $this->Example1->get($id);
-        if ($this->Example1->delete($example1)) {
-            $this->Flash->success(__('The example has been deleted.'));
-        } else {
-            $this->Flash->error(__('The example could not be deleted. Please, try again.'));
-        }
-
-        return $this->redirect(['action' => 'index']);
-    }
 }

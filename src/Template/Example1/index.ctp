@@ -40,10 +40,10 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
             <caption><?= __('Participants') ?></caption>
             <thead>
                 <tr>
-                   <th scope="col" class="col_delete">
                    <th scope="col" class="col_name"><?= __('Name') ?>
                    <th scope="col" class="col_email"><?= __('Email') ?>
                    <th scope="col" class="col_date_of_birth"><?= __('Date of birth') ?>
+                   <th scope="col" class="col_delete">
                 </tr>
             </thead>
             <tbody>
@@ -56,8 +56,8 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
              </tbody>
              <tfoot>
                 <tr class="plusline">
-                   <td>
                    <td><?= $this->Form->button(__('+'), ['name' => 'action', 'value' => 'addParticipant', 'class' => 'button plus']) ?>
+                   <td>
                    <td>
                    <td>
                 </tr>
