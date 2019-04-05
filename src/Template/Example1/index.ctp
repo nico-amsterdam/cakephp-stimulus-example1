@@ -2,8 +2,12 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Form\Example1Form $example1
+ * @var string $dateType
  */
+
+$this->assign('title', __('Example 1'));
 $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus']);
+
 ?>
 <?= $this->Form->create($example1, ['valueSources' => 'context']) ?>
 <nav class="example1 large-3 medium-4 columns" id="actions-sidebar">
@@ -11,7 +15,7 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
         <li class="heading"><?= __('Actions') ?>
         <li><?= $this->Html->link(__('Example 2'), ['controller' => 'Example2', 'action' => 'index']) ?>
     </ul -->
-    <div class="panel"><p><?= __('Example demonstrates partial page rendering with {0}. An event can trigger a Stimulus component to perform an ajax call to load a server-side generated html page fragment. The fragment appends or replaces a part of the page. The fragment can contain other stimulus components. Entered data can be preserved. Form submittion still works as normal.', $stimulusLink) ?></div>
+    <div class="panel"><p><?= __('Example demonstrates partial page rendering with {0}. An event triggers a Stimulus component to perform an ajax call to load a server-side generated html page fragment. The fragment appends or replaces a part of the page. The fragment can contain other Stimulus components with dynamic behavior. Entered data can be preserved. Form submission still works as normal.', $stimulusLink) ?></div>
     <div class="panel"><p><?= __('In the form, if the number of prices is changed, the section below it will be replaced with a new html fragment.') ?></div>
     <div class="panel"><p><?= __('In the table with participants a new row for a new participant can be added via the + button. The new row is a server-side generated html fragment.') ?></div>
 </nav>
@@ -37,8 +41,8 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
             <thead>
                 <tr>
                    <th scope="col" class="col_delete">
-                   <th scope="col"><?= __('Name') ?>
-                   <th scope="col"><?= __('Email') ?>
+                   <th scope="col" class="col_name"><?= __('Name') ?>
+                   <th scope="col" class="col_email"><?= __('Email') ?>
                    <th scope="col" class="col_date_of_birth"><?= __('Date of birth') ?>
                 </tr>
             </thead>
@@ -55,10 +59,11 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
                    <td>
                    <td><?= $this->Form->button(__('+'), ['name' => 'action', 'value' => 'addParticipant', 'class' => 'button plus']) ?>
                    <td>
+                   <td>
                 </tr>
             </tfoot>
         </table>
-        <?= $this->Form->button(__('Submit'), ['name' => 'action', 'value' => 'update', 'class' => 'button round']) ?>
+        <?= $this->Form->button(__('Submit'), ['name' => 'action', 'value' => 'updateNoSave', 'class' => 'button round']) ?>
     </fieldset>
 </div>
 <?= $this->Form->end() ?>

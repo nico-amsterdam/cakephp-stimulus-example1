@@ -2,6 +2,7 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Form\Example1Form $example1
+ * @var string $dateType
  */
 
 $contest = $example1->getData('contest')
