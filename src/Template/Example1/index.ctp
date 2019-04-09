@@ -56,14 +56,14 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
              </tbody>
              <tfoot>
                 <tr class="plusline">
-                   <td><?= $this->Form->button(__('+'), ['name' => 'action', 'value' => 'addParticipant', 'class' => 'button plus']) ?>
+                   <td><?= $this->Form->button(__('+'), ['name' => 'action', 'value' => 'addParticipant', 'class' => 'button plus', 'id' => 'add']) ?>
                    <td>
                    <td>
                    <td>
                 </tr>
             </tfoot>
         </table>
-        <?= $this->Form->button(__('Submit'), ['name' => 'action', 'value' => 'updateNoSave', 'class' => 'button round']) ?>
+        <?= $this->Form->button(__('Submit'), ['name' => 'action', 'value' => 'updateNoSave', 'class' => 'button round', 'id' => 'submit']) ?>
     </fieldset>
 </div>
 <?= $this->Form->end() ?>

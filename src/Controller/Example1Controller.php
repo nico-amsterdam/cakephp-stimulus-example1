@@ -10,7 +10,6 @@ use Cake\Event\Event;
  * Example1 Controller
  *
  *
- * @method \App\Model\Entity\Example[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class Example1Controller extends AppController
 {
@@ -27,13 +26,17 @@ class Example1Controller extends AppController
            ];
   }
 
-  private function newExample1Form(int $number_of_participants) {
-     return new Example1Form(0, max(1,$number_of_participants));
+  /*
+   * @return \App\Form\Example1Form $example1
+   */
+  private function newExample1Form(int $number_of_participants, string $action) {
+     return new Example1Form(0, max(1,$number_of_participants), $action);
   }
 
   public function beforeFilter(Event $event)
   {
-     if (isset($this->request)) {
+     if (isset($this->request) && $this->request->is('post'))
+     {
         $dateType = $this->getDateType();
         $number_of_participants = count($this->request->getData('contest.participants'));
         $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
@@ -48,62 +51,84 @@ class Example1Controller extends AppController
            $unlockBefore = array_merge($unlockBefore, []);
            $this->Security->setConfig('unlockedFields', $unlockBefore);
         } 
-        else {
+        else
+        {
            $this->log('oeps ' . $number_of_participants, 'debug');
         } 
-
      }
      // $this->log(print_r($event, true), 'debug');
      parent::beforeFilter($event);
   }
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|void
-     */
-    public function index()
-    {
-       $number_of_participants = count($this->request->getData('contest.participants'));
-       $example1 = $this->newExample1Form($number_of_participants);
-       if ($this->request->is('post')) {
-          $action = $this->request->getData('action');
-          $example1->setData($this->request->getData());
-          if ($example1->execute($this->request->getData())) {
-             $this->Flash->success(__('Succes!'));
-             $data = $example1->getData();
-             $newParticipants = [];
-             if ($number_of_participants > 0) {
-                foreach ($data['contest']['participants'] as $key => $participant) {
-                   if ($participant['mark_for_deletion'] == 1) {
-                      $number_of_participants -= 1;
-                   } else {
-                      $participant['id'] = count($newParticipants);
-                      $newParticipants[] = $participant;
-                   }
-                }
-                $data['contest']['participants'] = $newParticipants;
-             }
-             if ($number_of_participants <= 0) {
-                // minimum one participant in the table. Add new record:
-                $data['contest']['participants'] = [ $this->getNewParticipant(0) ];
-                $number_of_participants = 1;
-             } else if ($action == 'addParticipant') {
-                $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants);
-                $number_of_participants += 1;
-             }
-             $example1 = $this->newExample1Form($number_of_participants);
-             $example1->setData($data);
-             // $this->set([$example1->getData()]);
-             $this->request = $this->request->withParsedBody($data);
-             $this->log('DATA3 ' . print_r( $example1->getData(), true), 'debug');
-          } else {
-             // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
-             $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
-             $this->Flash->error(__('There was a problem submitting your form.'));
-          }
-       }
-       if ($this->request->is('get')) {
+  /*
+   * @param array $data Data array.
+   * @return \App\Form\Example1Form $example1
+   */
+  private function deleteMarkedParticipants($data) {
+     $action = $this->request->getData('action');
+     $newParticipants = [];
+     $number_of_participants = count($this->request->getData('contest.participants'));
+     if ($number_of_participants > 0) {
+        foreach ($data['contest']['participants'] as $key => $participant) {
+           if ($participant['mark_for_deletion'] == 1) {
+              $number_of_participants -= 1;
+           } else {
+              $participant['id'] = count($newParticipants);
+              $newParticipants[] = $participant;
+           }
+        }
+        $data['contest']['participants'] = $newParticipants;
+     }
+     if ($number_of_participants <= 0) {
+        // minimum one participant in the table. Add new record:
+        $data['contest']['participants'] = [ $this->getNewParticipant(0) ];
+        $number_of_participants = 1;
+     } else if ($action == 'addParticipant') {
+        $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants);
+        $number_of_participants += 1;
+     }
+     $example1 = $this->newExample1Form($number_of_participants, $action);
+     $example1->setData($data);
+
+     return $example1;
+     // $this->set([$example1->getData()]);
+  }
+
+  /**
+   * Index method
+   *
+   * @return \Cake\Http\Response|void
+   */
+  public function index()
+  {
+     if ($this->request->is('post')) {
+        $action = $this->request->getData('action');
+        $number_of_participants = count($this->request->getData('contest.participants'));
+        $example1 = $this->newExample1Form($number_of_participants, $action);
+        $example1->setData($this->request->getData());
+        if ($example1->execute($this->request->getData())) {
+           $this->Flash->success(__('Succes!'));
+           $example1 = $this->deleteMarkedParticipants($example1->getData());
+           $session = $this->getRequest()->getSession();
+           $session->write('example1', $example1->getData());
+           $session->write('action', $example1->getAction());
+           // POST and redirect pattern
+           return $this->redirect(['action' => 'index']);
+        }
+        // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
+        $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
+        $this->Flash->error(__('There was a problem submitting your form.'));
+     }
+     if ($this->request->is('get')) {
+        $session = $this->getRequest()->getSession();
+        if ($session->check('example1')) {
+          $data = $session->read('example1');
+          $number_of_participants = count($data['contest']['participants']);
+          $example1 = $this->newExample1Form($number_of_participants, $session->read('action'));
+          $example1->setData($data);
+        } else {
+          $number_of_participants = 1;
+          $example1 = $this->newExample1Form($number_of_participants, 'init');
           $example1->setData([
              'contest' => [
                'name' => '',
@@ -116,17 +141,30 @@ class Example1Controller extends AppController
                ],
               ],
           ]);
-          // $this->log('GET DATA2 ' . print_r( $example1->getData(), true), 'debug');
-       }
-       $this->Security->setConfig('unlockedFields', []);
-       $this->set('dateType', $this->getDateType());
-       $this->set('example1', $example1);
-    }
+        }
+     }
+     $this->Security->setConfig('unlockedFields', []);
+     $this->set('dateType', $this->getDateType());
+     $this->set('example1', $example1);
+     $this->set('autofocusIndex', (int) (($this->canAutofocus() && $example1->getAction() == 'addParticipant') ? ($number_of_participants - 1) : -1));
+  }
 
-    public function getDateType() 
-    {
-        $isMSIE = strpos($this->request->getHeaderLine('User-Agent'), 'Trident/') !== false;
-        return $isMSIE ? 'date' : 'datepicker';
-    }
+  private function isInternetExplorer() {
+      $isMSIE = strpos($this->request->getHeaderLine('User-Agent'), 'Trident/') !== false;
+      return $isMSIE;
+  }
 
+  private function isEdge() {
+      $isEdge = strpos($this->request->getHeaderLine('User-Agent'), ' Edge/') !== false;
+      return $isEdge;
+  }
+
+  private function getDateType() 
+  {
+      return $this->isInternetExplorer() ? 'date' : 'datepicker';
+  }
+
+  private function canAutofocus() {
+    return !$this->isInternetExplorer() and !$this->isEdge();
+  }
 }
