@@ -64,7 +64,7 @@ class Example1Controller extends AppController
    * @param array $data Data array.
    * @return \App\Form\Example1Form $example1
    */
-  private function deleteMarkedParticipants($data) {
+  private function deleteMarkedAndNewParticipants($data) {
      $action = $this->request->getData('action');
      $newParticipants = [];
      $number_of_participants = count($this->request->getData('contest.participants'));
@@ -89,9 +89,7 @@ class Example1Controller extends AppController
      }
      $example1 = $this->newExample1Form($number_of_participants, $action);
      $example1->setData($data);
-
      return $example1;
-     // $this->set([$example1->getData()]);
   }
 
   /**
@@ -106,18 +104,23 @@ class Example1Controller extends AppController
         $number_of_participants = count($this->request->getData('contest.participants'));
         $example1 = $this->newExample1Form($number_of_participants, $action);
         $example1->setData($this->request->getData());
+        $session = $this->getRequest()->getSession();
         if ($example1->execute($this->request->getData())) {
-           $this->Flash->success(__('Succes!'));
-           $example1 = $this->deleteMarkedParticipants($example1->getData());
-           $session = $this->getRequest()->getSession();
-           $session->write('example1', $example1->getData());
-           $session->write('action', $example1->getAction());
-           // POST and redirect pattern
-           return $this->redirect(['action' => 'index']);
+           if ($action == 'updateNoSave') {
+              $this->Flash->success(__('Succes!'));
+           }
+           $example1 = $this->deleteMarkedAndNewParticipants($example1->getData());
+        } else {
+           // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
+           $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
+           $this->Flash->error(__('There was a problem submitting your form.'));
         }
-        // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
-        $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
-        $this->Flash->error(__('There was a problem submitting your form.'));
+        $session->write(['example1' => $example1->getData()
+                        ,'action' => $example1->getAction()
+                        ,'errors' => $example1->getErrors()
+                        ]);
+        // POST and redirect pattern; make sure browser-back works.
+        return $this->redirect(['action' => 'index']);
      }
      if ($this->request->is('get')) {
         $session = $this->getRequest()->getSession();
@@ -126,6 +129,7 @@ class Example1Controller extends AppController
           $number_of_participants = count($data['contest']['participants']);
           $example1 = $this->newExample1Form($number_of_participants, $session->read('action'));
           $example1->setData($data);
+          $example1->setErrors($session->read('errors'));
         } else {
           $number_of_participants = 1;
           $example1 = $this->newExample1Form($number_of_participants, 'init');
@@ -165,6 +169,6 @@ class Example1Controller extends AppController
   }
 
   private function canAutofocus() {
-    return !$this->isInternetExplorer() and !$this->isEdge();
+    return !false;  // !$this->isInternetExplorer() and !$this->isEdge();
   }
 }
