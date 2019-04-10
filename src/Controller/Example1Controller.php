@@ -35,8 +35,13 @@ class Example1Controller extends AppController
 
   public function beforeFilter(Event $event)
   {
+     parent::beforeFilter($event);
      if (isset($this->request) && $this->request->is('post'))
      {
+        if (!$this->getRequest()->getSession()->check('_Token')) {
+           $this->Flash->error(__('Your session has expired due to inactivity.'));
+           return $this->redirect(['action' => 'index']);
+        }
         $dateType = $this->getDateType();
         $number_of_participants = count($this->request->getData('contest.participants'));
         $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
@@ -57,7 +62,6 @@ class Example1Controller extends AppController
         } 
      }
      // $this->log(print_r($event, true), 'debug');
-     parent::beforeFilter($event);
   }
 
   /*
@@ -65,7 +69,7 @@ class Example1Controller extends AppController
    * @return \App\Form\Example1Form $example1
    */
   private function deleteMarkedAndNewParticipants($data) {
-     $action = $this->request->getData('action');
+     $action = $this->request->getData('example1action');
      $newParticipants = [];
      $number_of_participants = count($this->request->getData('contest.participants'));
      if ($number_of_participants > 0) {
@@ -100,7 +104,7 @@ class Example1Controller extends AppController
   public function index()
   {
      if ($this->request->is('post')) {
-        $action = $this->request->getData('action');
+        $action = $this->request->getData('example1action');
         $number_of_participants = count($this->request->getData('contest.participants'));
         $example1 = $this->newExample1Form($number_of_participants, $action);
         $example1->setData($this->request->getData());
