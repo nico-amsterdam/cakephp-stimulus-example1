@@ -14,8 +14,9 @@ module.exports = {
   ],
 
   output: {
+    path: path.resolve(__dirname, "webroot/js"),
     filename: "[name].js",
-    path: path.resolve(__dirname, "webroot/js")
+    sourceMapFilename: "[name].js.map"
   },
 
   mode: "production",

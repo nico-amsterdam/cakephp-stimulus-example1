@@ -39,6 +39,7 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
               'type' => 'select', 
               'label' => __('Number of prices'),
               'options' => [0,1,2,3],
+              'size' => 4,
               'data-action' => 'change->common--loader#update',
             ]); ?>
             <span data-target="common--loader.output1">
@@ -56,15 +57,15 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
                    <th scope="col" class="col_delete">
                 </tr>
             </thead>
-            <tbody id="tbody" data-target="common--loader.output1" />
+            <tbody id="tbody" data-target="common--loader.output1">
                 <?php
                   echo $this->element('Example1/ContestParticipants', [
                     "participants" => $example1->getData('contest.participants'),
                     "participants_offset" => 0,
                   ]);
                 ?>
-             </tbody>
-             <tfoot>
+            </tbody>
+            <tfoot>
                 <tr class="plusline">
                    <td><?= $this->Form->button(__('+'), ['name' => 'example1action', 'value' => 'addParticipant', 'class' => 'button plus', 'id' => 'add', 'data-action' => 'click->common--loader#update']) ?>
                    <td>

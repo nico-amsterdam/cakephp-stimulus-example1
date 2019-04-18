@@ -527,6 +527,10 @@ table td {
  * CUSTOM ADDED CODE STARTS HERE
  */
 
+select[size] {
+  height: auto
+}
+
 .trashbin input[type=checkbox] {
     display: block;
     width: 30px;
