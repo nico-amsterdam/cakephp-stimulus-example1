@@ -17,12 +17,12 @@ class Example1Controller extends AppController
 
   private function getNewParticipant(int $index, int $dynnew = 0) {
     return [
-//             'id' => $index,
+             'id' => $index,
              'name' => '',
              'email' => '',
              'date_of_birth' => '',
              'mark_for_deletion' => false,
-             'dynnew' => $dynnew,
+             'dynnew' => $dynnew,  // dynamic new. true if participant is added by client-side code
            ];
   }
 
@@ -77,11 +77,24 @@ class Example1Controller extends AppController
      // $this->log(print_r($event, true), 'debug');
   }
 
+  private function participantsAreNotNewAnymore(array $data) {
+     $newParticipants = [];
+     $number_of_participants = count($this->request->getData('contest.participants'));
+     if ($number_of_participants > 0) {
+        foreach ($data['contest']['participants'] as $key => $participant) {
+            $participant['dynnew'] = 0;
+            $newParticipants[] = $participant;
+        }
+        $data['contest']['participants'] = $newParticipants;
+     }
+     return $data;
+  }
+
   /*
    * @param array $data Data array.
    * @return \App\Form\Example1Form $example1
    */
-  private function deleteMarkedAndNewParticipants($data) {
+  private function deleteMarkedAndNewParticipants(array $data) {
      $action = $this->request->getData('example1action');
      $newParticipants = [];
      $number_of_participants = count($this->request->getData('contest.participants'));
@@ -91,7 +104,7 @@ class Example1Controller extends AppController
               $number_of_participants -= 1;
            } else {
               $participant['id'] = count($newParticipants);
-              $participant['dynnew'] = 0;
+              // $participant['dynnew'] = 0;
               $newParticipants[] = $participant;
            }
         }
@@ -133,7 +146,7 @@ class Example1Controller extends AppController
            $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
            $this->Flash->error(__('There was a problem submitting your form.'));
         }
-        $session->write(['example1' => $example1->getData()
+        $session->write(['example1' => $this->participantsAreNotNewAnymore($example1->getData())
                         ,'action' => $example1->getAction()
                         ,'errors' => $example1->getErrors()
                         ]);
