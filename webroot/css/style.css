@@ -668,14 +668,14 @@ body, h1, h2, h3, h4, h5, h6,
   margin-top: 20px;
 }
 
-.example1 #price2 {
+.example1 #price\.out2 {
   background-color: lightgrey;
   background-image: linear-gradient(to bottom right, whitesmoke, silver);
   box-shadow: 18px -10px silver;
   border: silver 1px solid;
 }
 
-.example1 #price3 {
+.example1 #price\.out3 {
   background-color: NavajoWhite;
   background-image: linear-gradient(to bottom right, NavajoWhite, darksalmon);
   box-shadow: 18px -10px darksalmon;
