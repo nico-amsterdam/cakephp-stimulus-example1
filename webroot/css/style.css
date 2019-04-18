@@ -599,7 +599,7 @@ body, h1, h2, h3, h4, h5, h6,
 
 .example1.contest.form input {
   margin-bottom: 0.2rem;
-  line-height: 0.7rem;
+  line-height: 1rem;
 }
 
 .example1 .input .error-message {

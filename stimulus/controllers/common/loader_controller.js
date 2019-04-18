@@ -2,7 +2,8 @@ import { Controller } from "stimulus"
 
 // parameters: max, url1, url2, url3, url4, url5, method1, method2, method3, method4, method4, append1, append2, append3, append4, append5
 //      method1..5 defaults to POST
-//      max, maximum index, default to -1 (unlimited)  (to limit the number of appends)
+//      max, maximum count, default to -1 (unlimited)  (to limit the number of appends)
+//      tokenName, name of the csrf token for POST's
 //      append1..5 boolean, defaults to replace. For example, if append1 is present, it will append otherwise replace content.
 // targets   : output1, output2, output3, output4, output5
 export default class extends Controller {
@@ -12,8 +13,9 @@ export default class extends Controller {
   // Inspired by code from Simon Steinberger & Stefan Gabos found at:
   // Stackoverflow: https://stackoverflow.com/questions/11661187/form-serialize-javascript-no-framework
   getFormState(target, result) {
+    // result.push('_csrfToken', encodeURIComponent(document.getElementsByName('_csrfToken')[0].value));
     if (typeof target === 'object')
-        Array.prototype.slice.call(target.querySelectorAll('input[name]:not([disabled])')).forEach(function(control) {
+        Array.prototype.slice.call(target.querySelectorAll('input[name]:not([disabled]),select[name]:not([disabled]),textarea[name]:not([disabled])')).forEach(function(control) {
             if (['file', 'reset', 'submit', 'button'].indexOf(control.type) === -1)
                if (control.type === 'select-multiple')
                   Array.prototype.slice.call(control.options).forEach(function(option) {
@@ -33,12 +35,13 @@ export default class extends Controller {
       if ('GET' == method.toUpperCase()) 
          return fetch(url + (url.indexOf('?') > 0 ? '&' : '?') + formData)
       return fetch(url, {
-         credentials: 'include',
-         method: method,
-         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-         },
-         body: formData.replace(/%20/g, '+')
+           credentials: 'include'
+         , method: method
+         , headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              , 'X-CSRF-Token': encodeURIComponent(document.getElementsByName('_csrfToken')[0].value)
+         }
+         , body: formData.replace(/%20/g, '+')
       })
   }
 
@@ -50,12 +53,12 @@ export default class extends Controller {
     return response;
   }
 
-  get index() {
-    return parseInt(this.data.get("index")) || 0
+  get count() {
+    return parseInt(this.data.get("count")) || 1
   }
 
-  set index(value) {
-    this.data.set("index", value)
+  set count(value) {
+    this.data.set("count", value)
   }
 
 
@@ -65,7 +68,7 @@ export default class extends Controller {
       }
       let updateMethod;
       if (this.data.has('append' + varPostfix)) {
-        updateMethod = (html) => target.innerHTML += html
+        updateMethod = (html) => target.insertAdjacentHTML( 'beforeend', html )
       } else {
         updateMethod = (html) => target.innerHTML = html
       }
@@ -78,7 +81,7 @@ export default class extends Controller {
   }
 
   load(eventType, elem) {
-    let formDataArray = [ 'event=' + eventType, 'index=' + this.index++ ]
+    let formDataArray =  [ 'event=' + eventType, 'count=' + this.count++ ]
     if (elem && elem.id  ) formDataArray.push('elem=' + encodeURIComponent(elem.id))
     if (elem && elem.name) formDataArray.push(encodeURIComponent(elem.name) + '=' + encodeURIComponent(elem.value))
     if (this.hasOutput1Target) this.updateContent(this.output1Target, '1', formDataArray);
@@ -93,8 +96,9 @@ export default class extends Controller {
   }
 
   update(event) {
+    event.preventDefault();
     let max = this.data.get('max') || -1
-    if (max < 0 || this.index <= max) {
+    if (max < 0 || this.count <= max) {
       this.load(event.type, event.currentTarget)
     } else if (max >= 0) {
       event.currentTarget.disabled = true

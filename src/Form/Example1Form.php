@@ -19,8 +19,8 @@ class Example1Form extends Form
   
 
     function __construct(int $participants_offset, int $number_of_participants, $action) {
+       $this->participants_offset    = $participants_offset;
        $this->number_of_participants = $number_of_participants;
-       $this->participants_offset = $participants_offset;
        $this->action = $action;
        parent::__construct(null);
     }
@@ -33,16 +33,16 @@ class Example1Form extends Form
      */
     protected function _buildSchema(Schema $schema)
     {
-       $schema->addField('contest.name', 'string');
+       $schema->addField('contest.name',   'string');
        $schema->addField('contest.number_of_prices', 'int');
        $schema->addField('contest.price1', 'string');
        $schema->addField('contest.price2', 'string');
        $schema->addField('contest.price3', 'string');
        for ($i = $this->participants_offset, $end_at = $this->participants_offset + $this->number_of_participants; $i < $end_at; $i++) {
            $prefix = 'contest.participants.' . $i . '.';
-           $schema->addField($prefix . 'name', 'string');
+           $schema->addField($prefix . 'name',  'string');
            $schema->addField($prefix . 'email', 'email');
-           $schema->addField($prefix . 'date_of_birth', 'date');
+           $schema->addField($prefix . 'date_of_birth',     'date');
            $schema->addField($prefix . 'mark_for_deletion', 'boolean');
            $schema->addField($prefix . 'dynnew', 'boolean');
        }

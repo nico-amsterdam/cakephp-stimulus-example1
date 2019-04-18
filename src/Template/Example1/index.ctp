@@ -5,11 +5,15 @@
  * @var string $dateType
  */
 
+
+$this->assign('script', $this->Html->script('stimulus_v1_0'));
 $this->assign('title', __('Example 1'));
 $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus']);
+$updatePriceRegionUrl = $this->Url->build('/example1/price_snippet',           []);
+$addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', []);
 
 ?>
-<?= $this->Form->create($example1, ['valueSources' => 'context']) ?>
+<?= $this->Form->create($example1) ?>
 <nav class="example1 large-3 medium-4 columns" id="actions-sidebar">
     <!-- ul class="side-nav">
         <li class="heading"><?= __('Actions') ?>
@@ -25,18 +29,24 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
         <legend><?= __('Edit contest') ?></legend>
         <?php
           echo $this->Form->control('contest.name', [
-            'required' => true,
-            'label' => __('Contest name')
-          ]);
-          echo $this->Form->control('contest.number_of_prices', [
-            'required' => true,
-            'type' => 'select', 
-            'label' => __('Number of prices'),
-            'options' => [0,1,2,3]
-          ]);
-          echo $this->element('Example1/Price');
-        ?>
-        <table class="participants" cellpadding="0" cellspacing="0">
+          'required' => true,
+          'label' => __('Contest name'),
+        ]);?>
+        <div id="price-panel" data-controller="common--loader" data-common--loader-url1="<?= $updatePriceRegionUrl ?>"> 
+          <?php
+            echo $this->Form->control('contest.number_of_prices', [
+              'required' => true,
+              'type' => 'select', 
+              'label' => __('Number of prices'),
+              'options' => [0,1,2,3],
+              'data-action' => 'change->common--loader#update',
+            ]); ?>
+            <span data-target="common--loader.output1">
+                <?= $this->element('Example1/Price'); ?>
+            </span>
+        </div>
+        <?= $this->Form->button(__('Submit'), ['name' => 'example1action', 'value' => 'update', 'class' => 'invisible', 'id' => 'default_button']) ?>
+        <table class="participants" cellpadding="0" cellspacing="0" id="participant-table" data-controller="common--loader" data-common--loader-url1="<?= $addParticipantUrl ?>" data-common--loader-append1> 
             <caption><?= __('Participants') ?></caption>
             <thead>
                 <tr>
@@ -46,7 +56,7 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
                    <th scope="col" class="col_delete">
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody" data-target="common--loader.output1" />
                 <?php
                   echo $this->element('Example1/ContestParticipants', [
                     "participants" => $example1->getData('contest.participants'),
@@ -56,14 +66,14 @@ $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['ta
              </tbody>
              <tfoot>
                 <tr class="plusline">
-                   <td><?= $this->Form->button(__('+'), ['name' => 'action', 'value' => 'addParticipant', 'class' => 'button plus', 'id' => 'add']) ?>
+                   <td><?= $this->Form->button(__('+'), ['name' => 'example1action', 'value' => 'addParticipant', 'class' => 'button plus', 'id' => 'add', 'data-action' => 'click->common--loader#update']) ?>
                    <td>
                    <td>
                    <td>
                 </tr>
             </tfoot>
         </table>
-        <?= $this->Form->button(__('Submit'), ['name' => 'action', 'value' => 'update', 'class' => 'button round', 'id' => 'submit']) ?>
+        <?= $this->Form->button(__('Submit'), ['name' => 'example1action', 'value' => 'update', 'class' => 'button round', 'id' => 'submit']) ?>
     </fieldset>
 </div>
 <?= $this->Form->end() ?>

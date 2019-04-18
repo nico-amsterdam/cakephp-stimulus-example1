@@ -15,14 +15,14 @@ class Example1Controller extends AppController
 {
   use LogTrait;
 
-  private function getNewParticipant(int $index) {
+  private function getNewParticipant(int $index, int $dynnew = 0) {
     return [
-             'id' => $index,
+//             'id' => $index,
              'name' => '',
              'email' => '',
              'date_of_birth' => '',
-             'mark_for_deletion' => 0,
-             'dynnew' => 0
+             'mark_for_deletion' => false,
+             'dynnew' => $dynnew,
            ];
   }
 
@@ -33,9 +33,17 @@ class Example1Controller extends AppController
      return new Example1Form(0, max(1,$number_of_participants), $action);
   }
 
+  private function logRequestData(string $descr) {
+     $this->log($descr . ': ' . print_r($this->request->getData() , true), 'debug');
+  }
+
   public function beforeFilter(Event $event)
   {
      parent::beforeFilter($event);
+     // Enable POST to /example1/price_snippet and /example1/add_participant_snippet:
+     $this->Security->setConfig('unlockedActions', ['priceSnippet', 'addParticipantSnippet']);
+     // These hidden fields can change, because 'price_snippet' can make them editable:
+     $this->Security->setConfig('unlockedFields', ['contest.price1', 'contest.price2', 'contest.price3']);
      if (isset($this->request) && $this->request->is('post'))
      {
         if (!$this->getRequest()->getSession()->check('_Token')) {
@@ -43,23 +51,28 @@ class Example1Controller extends AppController
            return $this->redirect(['action' => 'index']);
         }
         $dateType = $this->getDateType();
-        $number_of_participants = count($this->request->getData('contest.participants'));
+        $participants = $this->request->getData('contest.participants');
+        $number_of_participants = count($participants);
         $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
-        $this->log('NEW ' . $this->request->getData('contest.participants.0.dynnew') . ' COUNT ' . $number_of_participants, 'debug');
-        $this->log(print_r($this->request->getData() , true), 'debug');
+        $this->logRequestData('beforeFilter');
 
-        if ($number_of_participants > 0 && $dynnew === 1)
-        {
-           $this->log('UNLOCK', 'debug');
-           $unlockBefore = $this->Security->getConfig('unlockFields') ?? [];
-           // 'contest.participants.0.name',  'contest.participants.0.email',  'contest.participants.0.date_of_birth'
-           $unlockBefore = array_merge($unlockBefore, []);
-           $this->Security->setConfig('unlockedFields', $unlockBefore);
-        } 
-        else
-        {
-           $this->log('oeps ' . $number_of_participants, 'debug');
-        } 
+          $unlockBefore = $this->Security->getConfig('unlockFields') ?? [];
+          $this->log('unlockBefore1: ' . print_r($unlockBefore, true), 'debug');
+          for ($i = 0; $i < $number_of_participants; $i++)
+          {
+              $this->log('NEW ' . $i . '=' . print_r($participants[$i], true), 'debug');
+              $dynnew = (int) $participants[$i]['dynnew'];
+              if ($dynnew === 1) {
+                $unlockBefore[] = 'contest.participants.' . $i . '.name';
+                $unlockBefore[] = 'contest.participants.' . $i . '.email';
+                $unlockBefore[] = 'contest.participants.' . $i . '.date_of_birth';
+                $unlockBefore[] = 'contest.participants.' . $i . '.dynnew';
+                $unlockBefore[] = 'contest.participants.' . $i . '.mark_for_deletion';
+              }
+          }
+          $this->log('unlockBefore2: ' . print_r($unlockBefore, true), 'debug');
+          $this->Security->setConfig('unlockedFields', $unlockBefore);
+          $this->log('No participants: ' . $number_of_participants, 'debug');
      }
      // $this->log(print_r($event, true), 'debug');
   }
@@ -78,6 +91,7 @@ class Example1Controller extends AppController
               $number_of_participants -= 1;
            } else {
               $participant['id'] = count($newParticipants);
+              $participant['dynnew'] = 0;
               $newParticipants[] = $participant;
            }
         }
@@ -151,10 +165,35 @@ class Example1Controller extends AppController
           ]);
         }
      }
-     $this->Security->setConfig('unlockedFields', []);
+     $this->Security->setConfig('unlockedFields', []);  // TODO: reset unlocked because new participants are not locked anymore after submit?
      $this->set('dateType', $this->getDateType());
      $this->set('example1', $example1);
-     $this->set('autofocusIndex', (int) (($this->canAutofocus() && $example1->getAction() == 'addParticipant') ? ($number_of_participants - 1) : -1));
+     $this->set('autofocusIndex', (int) ($example1->getAction() == 'addParticipant' ? ($number_of_participants - 1) : -1));
+  }
+
+  public function priceSnippet() {
+     $this->logRequestData('priceSnippet');
+     $requestData = $this->request->getData();
+     $example1 = $this->newExample1Form(0, 'updatePriceRegion');
+     $example1->setData($requestData);
+     $this->set('example1', $example1);
+     $this->render('/Element/Example1/Price', 'ajax');
+  }
+
+  public function addParticipantSnippet() {
+     $this->logRequestData('addParticipantSnippet');
+     $number_of_participants = count($this->request->getData('contest.participants'));
+     $data = $this->request->getData();
+     // add new participant
+     $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants++, 1);
+     $example1 = $this->newExample1Form($number_of_participants, 'addParticipant');
+     $example1->setData($data);
+     $this->log('DATA WORDT: ' . print_r( $data, true), 'debug');
+     $this->request = $this->request->withParsedBody($data);
+     $this->set('dateType', $this->getDateType());
+     $this->set('example1', $example1);
+     $this->set('autofocusIndex', -1);
+     $this->render('/Element/Example1/AddParticipant', 'ajax');
   }
 
   private function isInternetExplorer() {
@@ -162,17 +201,8 @@ class Example1Controller extends AppController
       return $isMSIE;
   }
 
-  private function isEdge() {
-      $isEdge = strpos($this->request->getHeaderLine('User-Agent'), ' Edge/') !== false;
-      return $isEdge;
-  }
-
   private function getDateType() 
   {
       return $this->isInternetExplorer() ? 'date' : 'datepicker';
-  }
-
-  private function canAutofocus() {
-    return !false;  // !$this->isInternetExplorer() and !$this->isEdge();
   }
 }
