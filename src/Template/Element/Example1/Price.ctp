@@ -18,17 +18,17 @@ $contest = $example1->getData('contest')
     ?>
   </div>
   <?php if ($number_of_prices >= 3): ?>
-  <div>
+  <div class="row honor_podium">
     <div id="price.out2" class="pricebox"    data-target="example1--price.out2"><?= h($contest['price2']) ?></div>
     <div id="price.out1" class="pricebox up" data-target="example1--price.out1"><?= h($contest['price1']) ?></div>
     <div id="price.out3" class="pricebox"    data-target="example1--price.out3"><?= h($contest['price3']) ?></div>
   </div>
   <?php elseif (1 == $number_of_prices or 2 == $number_of_prices): ?>
-  <div class="row">
+  <div class="row awards">
     <div class="small-5 small-offset-3 columns"><?php echo $this->Html->image('trophy.svg', ['class' => 'trophy1', 'alt' => __('First price')]); ?></div>
     <div class="small-4 columns"><?php if (2 == $number_of_prices) echo $this->Html->image('trophy.svg', ['class' => 'trophy2', 'alt' => __('Second price')]); ?></div>
   </div>
-  <div class="row">
+  <div class="row pricetext">
     <div id="price.out1" class="small-4 small-offset-3 columns pricecaption" data-target="example1--price.out1"><?= h($contest['price1']) ?></div>
     <div id="price.out2" class="small-4 columns pricecaption" data-target="example1--price.out2"><?= (2 == $number_of_prices) ? h($contest['price2']) : '' ?></div>
   </div>

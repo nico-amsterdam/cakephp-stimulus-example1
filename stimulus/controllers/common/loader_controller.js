@@ -1,5 +1,5 @@
 import { Controller } from "stimulus"
-import {fetch} from 'whatwg-fetch'
+import 'whatwg-fetch'
 
 // parameters: max, url1, url2, url3, url4, url5, method1, method2, method3, method4, method4, append1, append2, append3, append4, append5
 //      method1..5 defaults to POST
