@@ -1,6 +1,6 @@
 # CakePHP specific files #
 ##########################
-# /config/app.php  just make sure it doesn't contain secrets.
+/config/app.php
 /config/.env
 /logs/*
 /tmp/*
