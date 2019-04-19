@@ -612,6 +612,10 @@ body, h1, h2, h3, h4, h5, h6,
   word-break: normal;
 }
 
+.example1 #default_button {
+  position: absolute /* do not take any space on the screen */
+}
+
 .example1 legend {
   margin-bottom: 0.4rem
 }
@@ -648,6 +652,14 @@ body, h1, h2, h3, h4, h5, h6,
   height: 43px;
   width: 44px;
   padding: 10px 6px; 
+}
+
+.example1 .total1prices {
+  margin-bottom: 3.5em;
+}
+
+.example1 .total2prices {
+  margin-bottom: 2em;
 }
 
 .example1 .pricebox {

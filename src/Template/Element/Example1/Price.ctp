@@ -9,9 +9,9 @@ $contest = $example1->getData('contest')
 
 ?>
  <div class="container" data-controller="example1--price" id="price-panel-div">
-  <div class="formpanel prices">
+  <?php $number_of_prices = $contest['number_of_prices']; ?>
+  <div class="formpanel prices total<?= h($number_of_prices) ?>prices"> 
     <?php
-       $number_of_prices = $contest['number_of_prices'];
        echo $this->Form->control('contest.price1', $number_of_prices >= 1 ? ['required' => true, 'data-action' => 'keyup->example1--price#update', 'label' => __('First price')]  : ['type' => 'hidden']);
        echo $this->Form->control('contest.price2', $number_of_prices >= 2 ? ['required' => true, 'data-action' => 'keyup->example1--price#update','label' => __('Second price')] : ['type' => 'hidden']);
        echo $this->Form->control('contest.price3', $number_of_prices >= 3 ? ['required' => true, 'data-action' => 'keyup->example1--price#update', 'label' => __('Third price')]  : ['type' => 'hidden']);
