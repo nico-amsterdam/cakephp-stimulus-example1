@@ -42,6 +42,6 @@ class AppView extends View
           'datepicker' => ['Datepicker']
         ]
       ]);
-      $this->loadHelper('Example1');
+      // $this->loadHelper('Example1');
     }
 }
