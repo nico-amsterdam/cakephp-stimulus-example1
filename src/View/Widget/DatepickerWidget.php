@@ -24,7 +24,7 @@ class DatepickerWidget implements WidgetInterface
       ];
       return $this->_templates->format('datepicker', [
          'name' => $data['name'],
-         'attrs' => $this->_templates->formatAttributes($data, ['name'])
+         'attrs' => $this->_templates->formatAttributes($data, ['name', 'type', 'val'])
       ]);
    }
 

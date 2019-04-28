@@ -42,12 +42,12 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
               'size' => 4,
               'data-action' => 'change->common--loader#update',
             ]); ?>
-            <span data-target="common--loader.output1">
+            <div data-target="common--loader.output1">
                 <?= $this->element('Example1/Price'); ?>
-            </span>
+            </div>
         </div>
         <?= $this->Form->button(__('Submit'), ['name' => 'example1action', 'value' => 'update', 'class' => 'invisible', 'id' => 'default_button']) ?>
-        <table class="participants" cellpadding="0" cellspacing="0" id="participant-table" data-controller="common--loader" data-common--loader-url1="<?= $addParticipantUrl ?>" data-common--loader-append1> 
+        <table class="participants" id="participant-table" data-controller="common--loader" data-common--loader-url1="<?= $addParticipantUrl ?>" data-common--loader-append1> 
             <caption><?= __('Participants') ?></caption>
             <thead>
                 <tr>

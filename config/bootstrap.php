@@ -136,7 +136,8 @@ if ($isCli) {
  */
 if (!Configure::read('App.fullBaseUrl')) {
     $s = null;
-    if (env('HTTPS')) {
+    //  HTTP_X_FORWARDED_PROTO: de-facto standard header for identifying the protocol
+    if (env('HTTPS') || env('HTTP_X_FORWARDED_PROTO') === 'https') {
         $s = 's';
     }
 
