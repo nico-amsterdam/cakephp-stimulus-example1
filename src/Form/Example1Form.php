@@ -71,9 +71,18 @@ class Example1Form extends Form
     {
         $contestValidator = new Validator();
         return $contestValidator->
-           requirePresence(['name', 'number_of_prices', 'price1'])->
+           requirePresence(['name', 'number_of_prices'])->
            notEmpty('name', __('A contest name is required'))->
            notEmpty('number_of_prices', __('Number of prices is required'))->
+           notEmpty('price1', __('First price is required'), function($context) {
+               return ($context['data']['number_of_prices'] >= 1); 
+           })->
+           notEmpty('price2', __('First price is required'), function($context) {
+               return ($context['data']['number_of_prices'] >= 2); 
+           })->
+           notEmpty('price3', __('First price is required'), function($context) {
+               return ($context['data']['number_of_prices'] >= 3); 
+           })->
            addNestedMany('participants', $this->getParticipantValidator());
     }
 

@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use App\Form\Example1Form;
 use Cake\Log\LogTrait;
 use Cake\Event\Event;
+use Cake\Http\Exception\UnauthorizedException;
 
 /**
  * Example1 Controller
@@ -37,44 +38,54 @@ class Example1Controller extends AppController
      $this->log($descr . ': ' . print_r($this->request->getData() , true), 'debug');
   }
 
+  private function endswith($string, $test) {
+    $strlen = strlen($string);
+    $testlen = strlen($test);
+    if ($testlen > $strlen) return false;
+    return substr_compare($string, $test, $strlen - $testlen, $testlen) === 0;
+  }
+
   public function beforeFilter(Event $event)
   {
      parent::beforeFilter($event);
+
      // Enable POST to /example1/price_snippet and /example1/add_participant_snippet:
      $this->Security->setConfig('unlockedActions', ['priceSnippet', 'addParticipantSnippet']);
+
      // These hidden fields can change, because 'price_snippet' can make them editable:
      $this->Security->setConfig('unlockedFields', ['contest.price1', 'contest.price2', 'contest.price3']);
+
      if (isset($this->request) && $this->request->is('post'))
      {
         if (!$this->getRequest()->getSession()->check('_Token')) {
-           $this->Flash->error(__('Your session has expired due to inactivity.'));
+           $expiredMsg = __('Your session has expired due to inactivity.');
+           // cannot redirect page for ajax requests
+           if ($this->endswith($this->request->url, '_snippet')) {
+              // throw new UnauthorizedException($expiredMsg);
+              return $this->response->withHeader('X-HTTP-Error-Description',$expiredMsg)->withStatus(401);
+           }
+           $this->Flash->error($expiredMsg);
            return $this->redirect(['action' => 'index']);
         }
         $dateType = $this->getDateType();
         $participants = $this->request->getData('contest.participants');
         $number_of_participants = count($participants);
         $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
-        $this->logRequestData('beforeFilter');
 
-          $unlockBefore = $this->Security->getConfig('unlockFields') ?? [];
-          $this->log('unlockBefore1: ' . print_r($unlockBefore, true), 'debug');
-          for ($i = 0; $i < $number_of_participants; $i++)
-          {
-              $this->log('NEW ' . $i . '=' . print_r($participants[$i], true), 'debug');
-              $dynnew = (int) $participants[$i]['dynnew'];
-              if ($dynnew === 1) {
-                $unlockBefore[] = 'contest.participants.' . $i . '.name';
-                $unlockBefore[] = 'contest.participants.' . $i . '.email';
-                $unlockBefore[] = 'contest.participants.' . $i . '.date_of_birth';
-                $unlockBefore[] = 'contest.participants.' . $i . '.dynnew';
-                $unlockBefore[] = 'contest.participants.' . $i . '.mark_for_deletion';
-              }
-          }
-          $this->log('unlockBefore2: ' . print_r($unlockBefore, true), 'debug');
-          $this->Security->setConfig('unlockedFields', $unlockBefore);
-          $this->log('No participants: ' . $number_of_participants, 'debug');
+        $unlockBefore = $this->Security->getConfig('unlockFields') ?? [];
+        for ($i = 0; $i < $number_of_participants; $i++)
+        {
+            $dynnew = (int) $participants[$i]['dynnew'];
+            if ($dynnew === 1) {
+              $unlockBefore[] = 'contest.participants.' . $i . '.name';
+              $unlockBefore[] = 'contest.participants.' . $i . '.email';
+              $unlockBefore[] = 'contest.participants.' . $i . '.date_of_birth';
+              $unlockBefore[] = 'contest.participants.' . $i . '.dynnew';
+              $unlockBefore[] = 'contest.participants.' . $i . '.mark_for_deletion';
+            }
+        }
+        $this->Security->setConfig('unlockedFields', $unlockBefore);
      }
-     // $this->log(print_r($event, true), 'debug');
   }
 
   private function participantsAreNotNewAnymore(array $data) {
@@ -177,15 +188,15 @@ class Example1Controller extends AppController
               ],
           ]);
         }
+        // $this->Security->setConfig('unlockedFields', []);  // TODO: reset unlocked because new participants are not locked anymore after submit?
+        $this->set('dateType', $this->getDateType());
+        $this->set('example1', $example1);
+        $this->set('autofocusIndex', (int) ($example1->getAction() == 'addParticipant' ? ($number_of_participants - 1) : -1));
      }
-     $this->Security->setConfig('unlockedFields', []);  // TODO: reset unlocked because new participants are not locked anymore after submit?
-     $this->set('dateType', $this->getDateType());
-     $this->set('example1', $example1);
-     $this->set('autofocusIndex', (int) ($example1->getAction() == 'addParticipant' ? ($number_of_participants - 1) : -1));
   }
 
   public function priceSnippet() {
-     $this->logRequestData('priceSnippet');
+     // $this->logRequestData('priceSnippet');
      $requestData = $this->request->getData();
      $example1 = $this->newExample1Form(0, 'updatePriceRegion');
      $example1->setData($requestData);
@@ -194,14 +205,13 @@ class Example1Controller extends AppController
   }
 
   public function addParticipantSnippet() {
-     $this->logRequestData('addParticipantSnippet');
+     // $this->logRequestData('addParticipantSnippet');
      $number_of_participants = count($this->request->getData('contest.participants'));
      $data = $this->request->getData();
      // add new participant
      $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants++, 1);
      $example1 = $this->newExample1Form($number_of_participants, 'addParticipant');
      $example1->setData($data);
-     $this->log('DATA WORDT: ' . print_r( $data, true), 'debug');
      $this->request = $this->request->withParsedBody($data);
      $this->set('dateType', $this->getDateType());
      $this->set('example1', $example1);

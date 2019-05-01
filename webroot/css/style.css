@@ -531,6 +531,20 @@ select[size] {
   height: auto
 }
 
+fieldset legend {
+  font-size: 1.2rem;
+  color: darkslategray;
+  border-bottom: 3px solid darkslategray;
+}
+
+.title-area a {
+  color: blanchedalmond
+}
+
+nav .panel a {
+  color: blue
+}
+
 .trashbin input[type=checkbox] {
     display: block;
     width: 30px;
@@ -616,6 +630,10 @@ body, h1, h2, h3, h4, h5, h6,
   position: absolute /* do not take any space on the screen */
 }
 
+.example1 fieldset {
+  padding: 1.25rem 0
+}
+
 .example1 legend {
   margin-bottom: 0.4rem
 }
@@ -655,15 +673,15 @@ body, h1, h2, h3, h4, h5, h6,
 }
 
 .example1 .total1prices {
-  margin-bottom: 3.5em;
+  margin-bottom: 3.5rem;
 }
 
 .example1 .total2prices {
-  margin-bottom: 2em;
+  margin-bottom: 2rem;
 }
 
 .example1 .pricetext {
-  min-height: 1.5em
+  min-height: 1.5rem
 }
 
 .example1 .pricebox {
@@ -702,7 +720,7 @@ body, h1, h2, h3, h4, h5, h6,
   left: 1rem
 }
 
-@media only screen and (max-width: 64em) { 
+@media only screen and (max-width: 64rem) { 
   .example1 .pricebox {
       width: 90px;
      height: 80px;

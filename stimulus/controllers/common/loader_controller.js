@@ -49,7 +49,7 @@ export default class extends Controller {
 
   handleErrors(response) {
     if (!response.ok) {
-        throw Error(response.statusText);
+        throw Error(response.headers.get('X-HTTP-Error-Description') || response.statusText);
     }
     return response;
   }
@@ -78,7 +78,7 @@ export default class extends Controller {
       .then(this.handleErrors)
       .then(response => response.text())
       .then(updateMethod)
-      .catch(error => console.log(error))
+      .catch(alert)
   }
 
   load(eventType, elem) {
