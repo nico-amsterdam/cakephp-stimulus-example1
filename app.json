@@ -1,0 +1,7 @@
+{
+  "name": "Demo CakePHP with Stimulus",
+  "description": "Example demonstrates partial page rendering with Stimulus",
+  "repository": "https://github.com/nico-amsterdam/cakephp-stimulus-example1",
+  "logo": "https://stimulusjs.org/images/logo-beige.svg",
+  "keywords": ["Stimulus", "CakePHP"]
+}
