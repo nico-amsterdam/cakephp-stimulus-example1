@@ -1,8 +1,10 @@
 # CakePHP with Stimulus.js
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
-
 A demo to show how partial page rendering with [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.org) 3.x.
+
+[See it here](https://cakephp-stimulusjs.herokuapp.com)
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
 
 ## Installation CakePHP
@@ -30,6 +32,12 @@ bin/cake server -p 8765
 ```
 
 Then visit `http://localhost:8765` to see the welcome page.
+
+## Installation Stimulus
+
+TODO
+
+## 
 
 ## Update
 
