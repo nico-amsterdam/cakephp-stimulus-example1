@@ -1,24 +1,28 @@
 # CakePHP with Stimulus.js
 
-A demo to show how partial page rendering with [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.org) 3.x.
+A demo showing [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.org) 3.x working together.
+As example, it shows partial page rendering; replacing and/or adding server-side generated HTML snippets on the web page.
 
 [See it here](https://cakephp-stimulusjs.herokuapp.com)
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
+What Stimulus does can be done with other javascript libraries as well, but what I like is:
+- The HTML is not cluttered with script code or vague class names
+- It's clear which controllers are used and where (data-controller attribute)
+- It's clear where the controller will make changes (data-target attribute)
+- It's clear what triggers the controller (data-action attribute)
+- The controllers have a life-cycle and are automatically mounted and unmounted if the DOM-tree is modified
+
+
 
 ## Installation CakePHP
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+1. Install [PHP](https://www.php.net/manual/en/install.php) and enable/install the INTL extension
+2. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
+3. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
 
 If Composer is installed globally, run
-
-```bash
-composer create-project --prefer-dist cakephp/app
-```
-
-In case you want to use a custom app dir name (e.g. `/myapp/`):
 
 ```bash
 composer create-project --prefer-dist cakephp/app myapp
