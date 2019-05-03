@@ -9,6 +9,7 @@
 $this->assign('script', $this->Html->script('stimulus_v1_0'));
 $this->assign('title', __('Example 1'));
 $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus']);
+$cakephpLink  = $this->Html->link(__('CakePHP'),  'https://cakephp.org',    ['target' => 'cakephp']);
 $updatePriceRegionUrl = $this->Url->build('/example1/price_snippet',           []);
 $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', []);
 
@@ -24,7 +25,7 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
     <div class="panel"><p><?= __('In the table with participants a new row for a new participant can be added via the + button. The new row is a server-side generated html fragment.') ?></div>
 </nav>
 <div class="example1 contest form large-9 medium-8 columns content">
-<h1><?= __('Demo CakePHP with {0}', $stimulusLink) ?></h1> 
+<h1><?= __('Demo {0} with {1}', $cakephpLink, $stimulusLink) ?></h1> 
     <fieldset>
         <legend><?= __('Edit contest') ?></legend>
         <?php

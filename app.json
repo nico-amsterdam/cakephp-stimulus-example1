@@ -3,5 +3,10 @@
   "description": "Example demonstrates partial page rendering with Stimulus",
   "repository": "https://github.com/nico-amsterdam/cakephp-stimulus-example1",
   "logo": "https://stimulusjs.org/images/logo-beige.svg",
-  "keywords": ["Stimulus", "CakePHP"]
+  "keywords": ["Stimulus", "CakePHP", "stimulusjs"],
+  "env": {
+     "HTTPS": "true",
+     "LOG_ERROR_URL": "file:///?className=Cake%5CLog%5CEngine%5CConsoleLog&levels[]=warning&levels[]=error&levels[]=critical&levels[]=alert&levels[]=emergency",
+     "LOG_DEBUG_URL": "file:///?className=Cake%5CLog%5CEngine%5CConsoleLog&levels[]=notice&levels[]=info&levels[]=debug"
+  }
 }
