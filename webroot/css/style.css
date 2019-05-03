@@ -665,11 +665,11 @@ body, h1, h2, h3, h4, h5, h6,
 .example1 table tr td a.plus {
   border-radius: 50%;
   margin-bottom: 0; 
-  font-size:54px; 
-  line-height: 24px;
-  height: 43px;
-  width: 44px;
-  padding: 10px 6px; 
+  font-size:42px; 
+  line-height: 48px;
+  height: 48px;
+  width: 49px;
+  padding: 0; 
 }
 
 .example1 .total1prices {
