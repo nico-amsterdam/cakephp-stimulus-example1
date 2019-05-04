@@ -62,7 +62,7 @@ class Example1Controller extends AppController
            // cannot redirect page for ajax requests
            if ($this->endswith($this->request->url, '_snippet')) {
               // throw new UnauthorizedException($expiredMsg);
-              return $this->response->withHeader('X-HTTP-Error-Description',$expiredMsg)->withStatus(401);
+              return $this->response->withHeader('X-HTTP-Error-Description', $expiredMsg . '\n' .  __('Reload the page to start a new session.'))->withStatus(401);
            }
            $this->Flash->error($expiredMsg);
            return $this->redirect(['action' => 'index']);
@@ -115,7 +115,6 @@ class Example1Controller extends AppController
               $number_of_participants -= 1;
            } else {
               $participant['id'] = count($newParticipants);
-              // $participant['dynnew'] = 0;
               $newParticipants[] = $participant;
            }
         }
@@ -154,14 +153,14 @@ class Example1Controller extends AppController
            $example1 = $this->deleteMarkedAndNewParticipants($example1->getData());
         } else {
            // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
-           $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
+           // $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
            $this->Flash->error(__('There was a problem submitting your form.'));
         }
         $session->write(['example1' => $this->participantsAreNotNewAnymore($example1->getData())
                         ,'action' => $example1->getAction()
                         ,'errors' => $example1->getErrors()
                         ]);
-        // POST and redirect pattern; make sure browser-back works.
+        // POST and redirect pattern; to make sure that the browser-back works.
         return $this->redirect(['action' => 'index']);
      }
      if ($this->request->is('get')) {
@@ -188,7 +187,6 @@ class Example1Controller extends AppController
               ],
           ]);
         }
-        // $this->Security->setConfig('unlockedFields', []);  // TODO: reset unlocked because new participants are not locked anymore after submit?
         $this->set('dateType', $this->getDateType());
         $this->set('example1', $example1);
         $this->set('autofocusIndex', (int) ($example1->getAction() == 'addParticipant' ? ($number_of_participants - 1) : -1));

@@ -665,19 +665,21 @@ body, h1, h2, h3, h4, h5, h6,
 .example1 table tr td a.plus {
   border-radius: 50%;
   margin-bottom: 0; 
-  font-size:42px; 
-  line-height: 48px;
-  height: 48px;
-  width: 49px;
-  padding: 0; 
+  font-size: 3rem; 
+  font-weight: bold;
+  line-height: 2rem;
+  height: 3rem;
+  width: 3rem;
+  padding: 0 0 0.5rem 0; 
+  -webkit-padding-after: 0;
 }
 
 .example1 .total1prices {
-  margin-bottom: 3.5rem;
+  margin-bottom: 3.5rem
 }
 
 .example1 .total2prices {
-  margin-bottom: 2rem;
+  margin-bottom: 2rem
 }
 
 .example1 .pricetext {
