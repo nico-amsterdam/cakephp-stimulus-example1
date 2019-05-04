@@ -17,7 +17,7 @@
         "cakephp/debug_kit": "^3.17.0",
         "josegonzalez/dotenv": "3.*",
         "mockery/mockery": "^1.0",
-        "phpunit/phpunit": "^7|^8",
+        "phpunit/phpunit": "^7",
         "psy/psysh": "@stable",
         "heroku/heroku-buildpack-php": "*"
     },
