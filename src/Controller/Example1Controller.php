@@ -62,7 +62,7 @@ class Example1Controller extends AppController
            // cannot redirect page for ajax requests
            if ($this->endswith($this->request->url, '_snippet')) {
               // throw new UnauthorizedException($expiredMsg);
-              return $this->response->withHeader('X-HTTP-Error-Description', $expiredMsg . '\n' .  __('Reload the page to start a new session.'))->withStatus(401);
+              return $this->response->withHeader('X-HTTP-Error-Description', $expiredMsg . ' ' .  __('Reload the page to start a new session.'))->withStatus(401);
            }
            $this->Flash->error($expiredMsg);
            return $this->redirect(['action' => 'index']);
