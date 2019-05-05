@@ -13,7 +13,7 @@
             echo '<td>' . $this->Form->control('contest.participants.' . $i . '.email', ['label' => ['text' => __('Participant email address'), 'class' => 'show-for-sr']]);
             echo '<td>' . $this->Form->control('contest.participants.' . $i . '.date_of_birth', ['type' => $dateType,  'label' => ['text' => __('Participant date of birth'), 'class' => 'show-for-sr']]);
             echo '<td class="trashbin">';
-            echo $this->Form->control('contest.participants.' . $i . '.mark_for_deletion', ['type' => 'checkbox', 'title' => __('Delete participant'), 'label' => ['text' => __('Mark participant for deletion'), 'class' => 'show-for-sr']]);
+            echo $this->Form->control('contest.participants.' . $i . '.mark_for_deletion', ['type' => 'checkbox', 'title' => __('Delete participant'), 'label' => false]);
             echo $this->Form->control('contest.participants.' . $i . '.dynnew', ['type' => 'hidden']);
         ?>
     </tr>
