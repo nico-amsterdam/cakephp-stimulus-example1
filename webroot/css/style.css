@@ -723,12 +723,14 @@ body, h1, h2, h3, h4, h5, h6,
 }
 
 @media only screen and (max-width: 64rem) { 
+
   .example1 .pricebox {
       width: 90px;
      height: 80px;
-     margin-right: 0;
-     margin-left: 14px;
+     margin-right: 14px;
+     margin-left:  0;
   }
+
 }
 
 .example1 .participants caption {
