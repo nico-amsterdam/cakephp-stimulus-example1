@@ -39,7 +39,7 @@
         </ul>
         <div class="top-bar-section">
             <ul class="right">
-                <li><a target="_blank" rel="noopener" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1">__('Fork me on GitHub')</a></li>
+            <li><a target="_blank" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1"><?= __('Fork me on GitHub') ?></a></li>
             </ul>
         </div>
     </nav>
