@@ -716,6 +716,7 @@ body, h1, h2, h3, h4, h5, h6,
   background-image: linear-gradient(to bottom right, NavajoWhite, darksalmon);
   box-shadow: 18px -10px darksalmon;
   border: darksalmon 1px solid;
+  margin-right: 0;
 }
 
 .example1 .pricecaption {
