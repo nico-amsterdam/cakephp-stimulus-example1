@@ -675,7 +675,7 @@ body, h1, h2, h3, h4, h5, h6,
 }
 
 .example1 .total1prices {
-  margin-bottom: 3.5rem
+  margin-bottom: 3.7rem
 }
 
 .example1 .total2prices {
@@ -730,6 +730,7 @@ body, h1, h2, h3, h4, h5, h6,
      height: 70px;
      margin-right: 14px;
      margin-left:  0;
+     margin-bottom: 89px;
   }
 
 }
