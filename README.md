@@ -14,7 +14,8 @@ What Stimulus does can be done with other javascript libraries as well, but what
 - It's clear which controllers are used and where (data-controller attribute)
 - It's clear where the controller will make changes (data-target attribute)
 - It's clear what triggers the controller (data-action attribute)
-- The controllers have a life-cycle and are automatically mounted and unmounted if the DOM-tree is modified
+- The controllers have a life-cycle and are automatically mounted and unmounted if the DOM-tree is modified.
+
 
 ## About the demo
 
@@ -60,6 +61,12 @@ configuration relevant for your application.
 The CakePHP skeleton uses a subset of [Foundation](http://foundation.zurb.com/) (v5) CSS
 framework by default. You can, however, replace it with any other library or
 custom styles.
+
+#### Install NPM
+
+For windows I used this [npm-windows-upgrade](https://github.com/felixrieseberg/npm-windows-upgrade) since Chocolatey installs a very old NPM version.
+
+Not all 
 
 #### Add Stimulus configuration files
 
