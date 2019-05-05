@@ -13,17 +13,14 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = 'CakePHP: the rapid development php framework';
 ?>
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-        <?= $cakeDescription ?>:
-        <?= $this->fetch('title') ?>
-    </title>
+    <meta name="Description" content="<?= $this->fetch('description') ?>">
+    <meta name="theme-color" content="#116d76">
+    <title><?= $this->fetch('title') ?></title>
     <?= $this->Html->meta('icon') ?>
 
     <?= $this->Html->css('base.css') ?>
@@ -42,7 +39,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </ul>
         <div class="top-bar-section">
             <ul class="right">
-                <li><a target="_blank" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1">Fork me on GitHub</a></li>
+                <li><a target="_blank" rel="noopener" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1">__('Fork me on GitHub')</a></li>
             </ul>
         </div>
     </nav>

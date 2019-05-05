@@ -8,8 +8,9 @@
 
 $this->assign('script', $this->Html->script('stimulus_v1_0'));
 $this->assign('title', __('Example 1'));
-$stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus']);
-$cakephpLink  = $this->Html->link(__('CakePHP'),  'https://cakephp.org',    ['target' => 'cakephp']);
+$this->assign('description', __('Demo of partial page rendering in a CakePHP application using Stimulus.'));
+$stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus', 'rel' => 'noopener']);
+$cakephpLink  = $this->Html->link(__('CakePHP'),  'https://cakephp.org',    ['target' => 'cakephp' , 'rel' => 'noopener']);
 $updatePriceRegionUrl = $this->Url->build('/example1/price_snippet',           []);
 $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', []);
 
