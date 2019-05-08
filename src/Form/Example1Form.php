@@ -4,6 +4,7 @@ namespace App\Form;
 use Cake\Form\Form;
 use Cake\Form\Schema;
 use Cake\Validation\Validator;
+use Cake\Validation\Validation;
 use Cake\Log\LogTrait;
 
 /**
@@ -13,12 +14,12 @@ class Example1Form extends Form
 {
     use LogTrait;
 
-    private $action;
+    private   $action;
     protected $number_of_participants = 0;
     protected $participants_offset = 0;
   
 
-    function __construct(int $participants_offset, int $number_of_participants, $action) {
+    function __construct(int $participants_offset, int $number_of_participants, string $action) {
        $this->participants_offset    = $participants_offset;
        $this->number_of_participants = $number_of_participants;
        $this->action = $action;
@@ -116,8 +117,17 @@ class Example1Form extends Form
            ])->
            allowEmptyDate('date_of_birth')->
            add('date_of_birth', 'format', [
-             'rule' => 'date',
-             'message' => __('A valid date of birth is required'),
+             'rule' => function ($value, $context) {
+                if (!Validation::date($value)) {
+                  return false;
+                }
+                $year = gettype($value) === 'string' ? date_create($value)->format('Y') : ((int) $value['year']);
+                $nowYear = date('Y');
+                // $this->log('COMPARE '. $year . ' with ' . $nowYear, 'debug');
+                
+                return $year >= $nowYear - 120 && $year <= $nowYear - 4;
+             },
+             'message' => __('Enter a valid date of birth'),
            ]);
     }
 

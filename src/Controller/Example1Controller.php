@@ -133,6 +133,20 @@ class Example1Controller extends AppController
      return $example1;
   }
 
+  private function makeHiddenPricesEmpty(array $data) {
+      $number_of_prices = $data['contest']['number_of_prices'];
+      if ($number_of_prices < 3) {
+         $data['contest']['price3'] = '';
+         if ($number_of_prices < 2) {
+            $data['contest']['price2'] = '';
+            if ($number_of_prices < 1) {
+               $data['contest']['price1'] = '';
+            }
+         }
+      }
+      return $data;
+  }
+
   /**
    * Index method
    *
@@ -156,7 +170,7 @@ class Example1Controller extends AppController
            // $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
            $this->Flash->error(__('There was a problem submitting your form.'));
         }
-        $session->write(['example1' => $this->participantsAreNotNewAnymore($example1->getData())
+        $session->write(['example1' => $this->makeHiddenPricesEmpty($this->participantsAreNotNewAnymore($example1->getData()))
                         ,'action' => $example1->getAction()
                         ,'errors' => $example1->getErrors()
                         ]);
@@ -222,8 +236,16 @@ class Example1Controller extends AppController
       return $isMSIE;
   }
 
+  private function isSafariOnMacOS() {
+      $userAgent = $this->request->getHeaderLine('User-Agent');
+      $isChrome = strpos($userAgent, 'Chrome/') !== false;
+      $isSafari = !$isChrome && strpos($userAgent, 'Safari/')   !== false;
+      $isMacOS  = !$isChrome && strpos($userAgent, 'Macintosh') !== false;
+      return $isMacOS && $isSafari;
+  }
+
   private function getDateType() 
   {
-      return $this->isInternetExplorer() ? 'date' : 'datepicker';
+      return $this->isSafariOnMacOS() || $this->isInternetExplorer() ? 'date' : 'datepicker';
   }
 }

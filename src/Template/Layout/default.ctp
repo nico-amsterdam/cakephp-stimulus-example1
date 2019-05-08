@@ -13,8 +13,7 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-?>
-<!DOCTYPE html><html lang="en">
+?><!DOCTYPE html><html lang="en">
 <head>
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,7 +38,7 @@
         </ul>
         <div class="top-bar-section">
             <ul class="right">
-            <li><a target="_blank" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1"><?= __('Fork me on GitHub') ?></a></li>
+            <li><a target="github" href="https://github.com/nico-amsterdam/cakephp-stimulus-example1" rel="noopener"><?= __('Fork me on GitHub') ?></a></li>
             </ul>
         </div>
     </nav>
