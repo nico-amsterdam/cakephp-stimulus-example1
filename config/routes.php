@@ -49,7 +49,7 @@ Router::scope('/', function (RouteBuilder $routes) {
     // Register scoped middleware for in scopes.
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([
         'httpOnly' => true,
-        'security' => env('HTTPS')
+        'security' => (env('HTTPS') || env('HTTP_X_FORWARDED_PROTO') === 'https')
     ]));
 
     /**
