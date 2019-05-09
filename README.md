@@ -1,13 +1,13 @@
-# CakePHP with Stimulus.js
+# 1. CakePHP with Stimulus.js
 
 A demo showing [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.org) 3.x working together.
 As example, it shows partial page rendering; replacing/adding server-side generated HTML snippets on the web page.
 
 [See it here](https://cakephp-stimulusjs.herokuapp.com)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
+Deploy it yourself: [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
-## Why Stimulus
+## 1.1 Why Stimulus
 
 What Stimulus does can be done with other javascript libraries as well, but what I like is:
 - The HTML is not cluttered with script code or vague class names
@@ -17,34 +17,26 @@ What Stimulus does can be done with other javascript libraries as well, but what
 - The controllers have a life-cycle and are automatically mounted and unmounted if the DOM-tree is modified.
 
 
-## About the demo
+## 1.2 About the demo
 
 TODO: what the demo demonstrates.
 
-## Installation
+# 2 Installation
 
-### Install PHP 7 and CakePHP
+## 2.1 Install PHP 7 and CakePHP
 
 1. Install [PHP](https://www.php.net/manual/en/install.php) and enable/install the INTL extension
 2. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-   This documentation assumes that you have renamed composer.phar to composer. 
-   If not, you can use php composer.phar wherever composer is used in command line snippets.
 
-
-### Clone/Fork this example project to experiment with Stimulus (and CakePHP) 
-
-
-### Create a new CakePHP and include Stimulus
-
-#### Create new CakePHP project
-
-Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
-
-If Composer is installed globally, run
+## 2.2 Clone/Fork this example project 
 
 ```bash
-composer create-project --prefer-dist cakephp/app myapp
+git clone https://github.com/nico-amsterdam/cakephp-stimulus-example1
+
+composer update --lock
 ```
+
+## 2.3 Run CakePHP 
 
 You can now either use your machine's webserver to view the default home page, or start
 up the built-in webserver with:
@@ -55,23 +47,63 @@ bin/cake server -p 8765
 
 Then visit `http://localhost:8765` to see the welcome page.
 
-Read and edit `config/app.php` and setup the `'Datasources'` and any other
-configuration relevant for your application.
+## 2.4 Create a new CakePHP project
 
-The CakePHP skeleton uses a subset of [Foundation](http://foundation.zurb.com/) (v5) CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
 
-#### Install NPM
+If Composer is installed globally, run
 
-For windows I used this [npm-windows-upgrade](https://github.com/felixrieseberg/npm-windows-upgrade) since Chocolatey installs a very old NPM version.
+```bash
+composer create-project --prefer-dist cakephp/app myapp
+```
 
-Not all 
+## 2.5 Install & run Stimulus
 
-#### Add Stimulus configuration files
+### 2.5.1 Add Stimulus configuration files to an existing CakePHP project
 
-TODO
+Copy the following files from the example:
+- `.babelrc`
+- `composer.json`
+- `composer.lock`
+- `package.json`
+- `package-lock.json`
+- `webpack.config.json`
 
-#### Make Stimulus modifications/additions
+`mkdir stimulus`
 
-TODO
+Copy `index.js` to the stimulus directory.
+
+Create the `controllers` directory inside the `stimulus` directory.
+
+### 2.5.2 Install NPM
+
+For windows use this command line tool [npm-windows-upgrade](https://github.com/felixrieseberg/npm-windows-upgrade). Chocolatey installs a very old NPM version.
+
+Upgrade NPM: 
+`npm install -g npm@latest`
+
+or try the most recent version: 
+`npm install -g npm@next`
+
+
+#### 2.5.3 Install Webpack, Babel, polyfills and Stimulus-starter
+
+Since NPM 5.7.0, install from lock-file only:
+```bash
+npm ci
+```
+
+To upgrade `package-lock.json` and the project run `npm install`
+
+### 2.6 Make javascript modifications/additions
+
+Webpack can watch files and recompile whenever they change. Start the webpack watcher with this command:
+```bash
+npm start
+```
+Write your Stimulus controllers in the `stimulus/controllers` directory.
+
+I noticed that when `Visual studio code` is running, the Webpack watcher didn't pick up the changes. Stop `VS code` when running the Webpack watcher.
+
+[More info](https://stimulusjs.org)
+
