@@ -674,19 +674,19 @@ body, h1, h2, h3, h4, h5, h6,
   -webkit-padding-after: 0;
 }
 
-.example1 .total1prices {
+.example1 .total1prizes {
   margin-bottom: 3.7rem
 }
 
-.example1 .total2prices {
+.example1 .total2prizes {
   margin-bottom: 2rem
 }
 
-.example1 .pricetext {
+.example1 .prizetext {
   min-height: 1.5rem
 }
 
-.example1 .pricebox {
+.example1 .prizebox {
   height: 138px;
   width: 158px;
   padding: 20px;
@@ -704,14 +704,14 @@ body, h1, h2, h3, h4, h5, h6,
   margin-top: 20px;
 }
 
-.example1 .honor_podium #price\.out2 {
+.example1 .honor_podium #prize\.out2 {
   background-color: lightgrey;
   background-image: linear-gradient(to bottom right, whitesmoke, silver);
   box-shadow: 18px -10px silver;
   border: silver 1px solid;
 }
 
-.example1 .honor_podium #price\.out3 {
+.example1 .honor_podium #prize\.out3 {
   background-color: NavajoWhite;
   background-image: linear-gradient(to bottom right, NavajoWhite, darksalmon);
   box-shadow: 18px -10px darksalmon;
@@ -719,13 +719,13 @@ body, h1, h2, h3, h4, h5, h6,
   margin-right: 0;
 }
 
-.example1 .pricecaption {
+.example1 .prizecaption {
   left: 1rem
 }
 
 @media only screen and (max-width: 64rem) { 
 
-  .example1 .pricebox {
+  .example1 .prizebox {
       width: 80px;
      height: 70px;
      margin-right: 14px;
@@ -743,7 +743,7 @@ body, h1, h2, h3, h4, h5, h6,
   width: 35px
 }
 
-.example1 #contest-number-of-prices {
+.example1 #contest-number-of-prizes {
   width: 25%
 }
 
@@ -756,13 +756,13 @@ body, h1, h2, h3, h4, h5, h6,
   margin-top: 20px;
 }
 
-.example1 .formpanel.prices label {
+.example1 .formpanel.prizes label {
   text-align: right;
   padding-right: 0.5rem;
   font-size: 90%;
   vertical-align: middle;
 }
 
-.example1 .formpanel.prices input {
+.example1 .formpanel.prizes input {
   height: 1.5rem
 }

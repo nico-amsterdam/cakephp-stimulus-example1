@@ -49,11 +49,11 @@ class Example1Controller extends AppController
   {
      parent::beforeFilter($event);
 
-     // Enable POST to /example1/price_snippet and /example1/add_participant_snippet:
-     $this->Security->setConfig('unlockedActions', ['priceSnippet', 'addParticipantSnippet']);
+     // Enable POST to /example1/prize_snippet and /example1/add_participant_snippet:
+     $this->Security->setConfig('unlockedActions', ['prizeSnippet', 'addParticipantSnippet']);
 
-     // These hidden fields can change, because 'price_snippet' can make them editable:
-     $this->Security->setConfig('unlockedFields', ['contest.price1', 'contest.price2', 'contest.price3']);
+     // These hidden fields can change, because 'prize_snippet' can make them editable:
+     $this->Security->setConfig('unlockedFields', ['contest.prize1', 'contest.prize2', 'contest.prize3']);
 
      if (isset($this->request) && $this->request->is('post'))
      {
@@ -133,14 +133,14 @@ class Example1Controller extends AppController
      return $example1;
   }
 
-  private function makeHiddenPricesEmpty(array $data) {
-      $number_of_prices = $data['contest']['number_of_prices'];
-      if ($number_of_prices < 3) {
-         $data['contest']['price3'] = '';
-         if ($number_of_prices < 2) {
-            $data['contest']['price2'] = '';
-            if ($number_of_prices < 1) {
-               $data['contest']['price1'] = '';
+  private function makeHiddenPrizesEmpty(array $data) {
+      $number_of_prizes = $data['contest']['number_of_prizes'];
+      if ($number_of_prizes < 3) {
+         $data['contest']['prize3'] = '';
+         if ($number_of_prizes < 2) {
+            $data['contest']['prize2'] = '';
+            if ($number_of_prizes < 1) {
+               $data['contest']['prize1'] = '';
             }
          }
       }
@@ -170,7 +170,7 @@ class Example1Controller extends AppController
            // $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
            $this->Flash->error(__('There was a problem submitting your form.'));
         }
-        $session->write(['example1' => $this->makeHiddenPricesEmpty($this->participantsAreNotNewAnymore($example1->getData()))
+        $session->write(['example1' => $this->makeHiddenPrizesEmpty($this->participantsAreNotNewAnymore($example1->getData()))
                         ,'action' => $example1->getAction()
                         ,'errors' => $example1->getErrors()
                         ]);
@@ -191,10 +191,10 @@ class Example1Controller extends AppController
           $example1->setData([
              'contest' => [
                'name' => '',
-               'number_of_prices' => '1',
-               'price1' => '',
-               'price2' => '',
-               'price3' => '',
+               'number_of_prizes' => '1',
+               'prize1' => '',
+               'prize2' => '',
+               'prize3' => '',
                'participants' => [
                    $this->getNewParticipant(0)
                ],
@@ -207,13 +207,13 @@ class Example1Controller extends AppController
      }
   }
 
-  public function priceSnippet() {
-     // $this->logRequestData('priceSnippet');
+  public function prizeSnippet() {
+     // $this->logRequestData('prizeSnippet');
      $requestData = $this->request->getData();
-     $example1 = $this->newExample1Form(0, 'updatePriceRegion');
+     $example1 = $this->newExample1Form(0, 'updatePrizeRegion');
      $example1->setData($requestData);
      $this->set('example1', $example1);
-     $this->render('/Element/Example1/Price', 'ajax');
+     $this->render('/Element/Example1/Prize', 'ajax');
   }
 
   public function addParticipantSnippet() {

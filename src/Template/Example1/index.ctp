@@ -11,7 +11,7 @@ $this->assign('title', __('Example 1'));
 $this->assign('description', __('Demo of partial page rendering in a CakePHP application using Stimulus.'));
 $stimulusLink = $this->Html->link(__('Stimulus'), 'https://stimulusjs.org', ['target' => 'stimulus', 'rel' => 'noopener']);
 $cakephpLink  = $this->Html->link(__('CakePHP'),  'https://cakephp.org',    ['target' => 'cakephp' , 'rel' => 'noopener']);
-$updatePriceRegionUrl = $this->Url->build('/example1/price_snippet',           []);
+$updatePrizeRegionUrl = $this->Url->build('/example1/prize_snippet',           []);
 $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', []);
 
 ?>
@@ -22,7 +22,7 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
         <li><?= $this->Html->link(__('Example 2'), ['controller' => 'Example2', 'action' => 'index']) ?>
     </ul -->
     <div class="panel"><p><?= __('Example demonstrates partial page rendering with {0}. An event triggers a Stimulus component to perform an ajax call to load a server-side generated html page fragment. The fragment appends or replaces a part of the page. The fragment can contain other Stimulus components with dynamic behavior. Entered data can be preserved. Form submission still works as normal.', $stimulusLink) ?></div>
-    <div class="panel"><p><?= __('In the form, if the number of prices is changed, the section below it will be replaced with a new html fragment.') ?></div>
+    <div class="panel"><p><?= __('In the form, if the number of prizes is changed, the section below it will be replaced with a new html fragment.') ?></div>
     <div class="panel"><p><?= __('In the table with participants a new row for a new participant can be added via the + button. The new row is a server-side generated html fragment.') ?></div>
 </nav>
 <div class="example1 contest form large-9 medium-8 columns content">
@@ -34,18 +34,18 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
           'required' => true,
           'label' => __('Contest name'),
         ]);?>
-        <div id="price-panel" data-controller="common--loader" data-common--loader-url1="<?= $updatePriceRegionUrl ?>"> 
+        <div id="prize-panel" data-controller="common--loader" data-common--loader-url1="<?= $updatePrizeRegionUrl ?>"> 
           <?php
-            echo $this->Form->control('contest.number_of_prices', [
+            echo $this->Form->control('contest.number_of_prizes', [
               'required' => true,
               'type' => 'select', 
-              'label' => __('Number of prices'),
+              'label' => __('Number of prizes'),
               'options' => [0,1,2,3],
               'size' => 4,
               'data-action' => 'change->common--loader#update',
             ]); ?>
             <div data-target="common--loader.output1">
-                <?= $this->element('Example1/Price'); ?>
+                <?= $this->element('Example1/Prize'); ?>
             </div>
         </div>
         <?= $this->Form->button(__('Submit'), ['name' => 'example1action', 'value' => 'update', 'class' => 'invisible', 'id' => 'default_button']) ?>

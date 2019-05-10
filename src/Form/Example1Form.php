@@ -35,10 +35,10 @@ class Example1Form extends Form
     protected function _buildSchema(Schema $schema)
     {
        $schema->addField('contest.name',   'string');
-       $schema->addField('contest.number_of_prices', 'int');
-       $schema->addField('contest.price1', 'string');
-       $schema->addField('contest.price2', 'string');
-       $schema->addField('contest.price3', 'string');
+       $schema->addField('contest.number_of_prizes', 'int');
+       $schema->addField('contest.prize1', 'string');
+       $schema->addField('contest.prize2', 'string');
+       $schema->addField('contest.prize3', 'string');
        for ($i = $this->participants_offset, $end_at = $this->participants_offset + $this->number_of_participants; $i < $end_at; $i++) {
            $prefix = 'contest.participants.' . $i . '.';
            $schema->addField($prefix . 'name',  'string');
@@ -72,17 +72,17 @@ class Example1Form extends Form
     {
         $contestValidator = new Validator();
         return $contestValidator->
-           requirePresence(['name', 'number_of_prices'])->
+           requirePresence(['name', 'number_of_prizes'])->
            notEmpty('name', __('A contest name is required'))->
-           notEmpty('number_of_prices', __('Number of prices is required'))->
-           notEmpty('price1', __('First price is required'), function($context) {
-               return ($context['data']['number_of_prices'] >= 1); 
+           notEmpty('number_of_prizes', __('Number of prizes is required'))->
+           notEmpty('prize1', __('First prize is required'), function($context) {
+               return ($context['data']['number_of_prizes'] >= 1); 
            })->
-           notEmpty('price2', __('First price is required'), function($context) {
-               return ($context['data']['number_of_prices'] >= 2); 
+           notEmpty('prize2', __('First prize is required'), function($context) {
+               return ($context['data']['number_of_prizes'] >= 2); 
            })->
-           notEmpty('price3', __('First price is required'), function($context) {
-               return ($context['data']['number_of_prices'] >= 3); 
+           notEmpty('prize3', __('First prize is required'), function($context) {
+               return ($context['data']['number_of_prizes'] >= 3); 
            })->
            addNestedMany('participants', $this->getParticipantValidator());
     }
