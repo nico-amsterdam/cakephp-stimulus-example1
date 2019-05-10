@@ -21,40 +21,57 @@ What Stimulus does can be done with other javascript libraries as well, but what
 
 What the demo demonstrates: 
 - Partial page rendering with [Stimulus](https://stimulusjs.org)
-- The 'partials' are HTML snippets loaded from the server via ajax calls. These snippets are used to modify the page.
-- The loaded HTML snippets can contain references to Stimulus controllers. These are automatically connected. If they are removed from the page, they are automatically disconnected. In the demo, the area below the 'number of prizes' is dynamically changed, and it contains another Stimulus controller to update the prize. The area also contains input fields. Entered form data is kept when the area is updated.
+- The 'partials' are HTML snippets loaded from the server via ajax calls. These snippets are used to modify a part of the page.
+- The loaded HTML snippets can contain references to Stimulus controllers. These are automatically connected. If they are removed from the page, they are automatically disconnected. In the demo, the area below the 'number of prizes' is dynamically changed, and it contains another Stimulus controller to instantly copy the prize text. The area contains input fields, and the entered data is kept when the area is updated; or actually the entered data is send to the server and the returned HTML snippet contains these values.
+- The same PHP code used to generate the HTML snippets is also used when generating the page initially and after form submission. It uses CakePHP elements.
 
+Easy installation:
+- Only a few commands are needed to install and run it locally. The example doesn't use a database
 
-Stimulus needs Node to built the resulting javascript file. It generates stimulus_v1_0.js. The Node Package Manager (NPM) creates a subdirectory `node_modules` with zillions of files. The good news is: these are only needed during development, not in production. 
-- Babel is used, so modern javascript can be used en is transpiled to support browsers
-- Webpack is used to watch for saved changes and update automatically. With webpack and a stimulus helper we also don't need to register new controllers.
+Running Stimulus:
+Stimulus needs Node.js to build the resulting javascript file; stimulus_v1_0.js. When installing packages the Node Package Manager (NPM) creates a subdirectory `node_modules` with zillions of files. The good news is: these are only needed during development, not in production. 
+- Babel is used, so modern javascript can be used and is transpiled to support browsers.
+- Webpack is used to watch for saved changes in Stimulus controllers and update automatically the stimulus_v1_0.js file. With webpack and a stimulus helper we also don't need to register new controllers.
 
+Styling:
+- I took the css files from the [CakePHP Application Skeleton](https://github.com/cakephp/app) and only made additions to the style.css
 
-- Only a few commands are needed to install and run it locally, because the example doesn't use a database
-- I took the css files from the CakePHP starter project and only made additions to the style.css
-- The same code used to generate the HTML snippets is also used when generating the page initially and after form submission.
+What are those hyphens/dashes in the controller names?
+- In the HTML / `Example1/index.ctp`, indeed the names of the referenced Stimulus controllers contain two dashes. I made subdirectories for common- and page-specific controllers, and / maps to -- in the [Stimulus filename to identifier mapping](https://stimulusjs.org/handbook/installing#controller-filenames-map-to-identifiers)
+
+SecurityComponent:
+-- The CakePHP SecurityComponent is enabled. This gives a few challanges when used with client script code. The SecurityComponent rejects the submitted form data when fields are dynamically added or removed, hidden field values are changed, or a different form action url is used. Luckily these can selectively be unlocked, and this is happens in the beforeFilter of the Example1Controller.
+- Don't bother to make funny remarks in the live demo, because the data is only stored in the session. That's why a src/Form/Example1Form extending App\Form is used; it contains the field definitions and form validation. If you use a database, you won't need this, because then you will have a model. Define the tables (following CakePHP naming conventions) in the database, including primary, foreign and unique keys, and let `cake bake all` generate all the initial code.
+
+Polyfills:
 - To support Internet Explorer 11, the [Stimulus polyfill](https://stimulusjs.org/handbook/installing#browser-support) is used.
-- In the loader-controller the fetch API is used for the ajax calls. To support Internet Explorer 11, the whatwg/fetch polyfill is used.
-- In the HTML the names of the referenced stimulus controllers contain two dashes. That is because I made controller subdirectories for common- and page-specific controllers, and / maps to -- in the [Stimulus filename mapping](https://stimulusjs.org/handbook/installing#controller-filenames-map-to-identifiers)
-- The nginx configuration (`config/nginx.conf`) is made for production use: HTTP traffic is redirected to HTTPS, the browser is instructed to cache static assets, dynamic content is not cached and security headers are set.
-- The CakePHP SecurityComponent is enabled. This gives a few challanges when used with client-code: it doesn't the submitted data when fields are dynamically added are removed, hidden field values are not supposed to change, the form action url cannot be changed. Luckely these can selectively be unlocked, and this is happens in the beforeFilter of the example1controller.
-- Don't bother to make funny remarks in the live-demo, because the data is only stored in the session. That's why a src/Form/Example1Form extending App\Form is used; it contains the field definitions and form validation. If you use a database, you won't need this, because then you will have the tables and entities. Define the tables (following CakePHP naming conventions) in the database, including primary, foreign and unique keys, and let `cake bake all` generate all the initial code.
-- Sorry, but I didn't make unit tests.
-- Fork my github repository for improvements, other examples, or as a starter.
+- In the loader_controller the fetch API is used for the ajax calls. To support Internet Explorer 11, the whatwg/fetch polyfill is used.
+
+Nginx:
+- The nginx configuration (`config/nginx.conf`) for Heroku is made for production use: HTTP traffic is redirected to HTTPS, the browser is instructed to cache static assets, dynamic content is not cached and security headers are set.
+- The webpack.config.js uses a CompressionPlugin. This plugin produces stimulus_v1_0.js.gz, a compressed file of stimuls_v1_0.js. The idea is to combine this with the Nginx gzip_static setting, so Nginx doesn't have to compress this at runtime. However the Nginx server on Heroku doesn't contain the ngx_http_gzip_static_module module. On Ubuntu, this is not a problem and the gzip_static setting can be used. The CompressionPlugin is optional, and can be removed if you don't want the gz files.
+
+Unit test:
+- Uh... sorry, but I didn't make unit tests.
+
+Fork my [github repository](https://github.com/nico-amsterdam/cakephp-stimulus-example1) for improvements, other examples, or as a starter.
 
 
 # 2 Installation
 
 ## 2.1 Install PHP 7 and CakePHP
 
-1. Install [PHP](https://www.php.net/manual/en/install.php) and enable/install the INTL extension
+1. Install [PHP](https://www.php.net/manual/en/install.php) and enable/install the intl and mbstring extensions
 2. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
 
 ## 2.2 Clone/Fork this example project 
 
 ```bash
 git clone https://github.com/nico-amsterdam/cakephp-stimulus-example1
+```
 
+and install the PHP packages:
+```bash
 composer install
 ```
 
@@ -115,7 +132,7 @@ Since NPM 5.7.0, install from lock-file only:
 npm ci
 ```
 
-To upgrade `package-lock.json` and the project run `npm install`
+To upgrade `package-lock.json` and the project run `npm install` instead.
 
 # 3 Make javascript modifications/additions
 
@@ -127,5 +144,5 @@ Write your Stimulus controllers in the `stimulus/controllers` directory.
 
 [More info](https://stimulusjs.org/handbook/introduction)
 
-I noticed that when `Visual Studio Code` is running, the Webpack watcher didn't pick up the changes, so exit `Visual Studio Code` when you make changes in the Stimulus controllers.
+I noticed that when `Visual Studio Code` is running, the Webpack watcher didn't pick up the changes. In that case, exit `Visual Studio Code` when you make changes in the Stimulus controllers.
 
