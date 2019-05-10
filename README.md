@@ -23,7 +23,7 @@ What the demo demonstrates:
 - Partial page rendering with [Stimulus](https://stimulusjs.org)
 - The 'partials' are HTML snippets loaded from the server via ajax calls. These snippets are used to modify a part of the page.
 - The loaded HTML snippets can contain references to Stimulus controllers. These are automatically connected. If they are removed from the page, they are automatically disconnected. In the demo, the area below the 'number of prizes' is dynamically changed, and it contains another Stimulus controller to instantly copy the prize text. The area contains input fields, and the entered data is kept when the area is updated; or actually the entered data is send to the server and the returned HTML snippet contains these values.
-- The same PHP code used to generate the HTML snippets is also used when generating the page initially and after form submission. It uses CakePHP elements.
+- The PHP code used to generate the HTML snippets, is also used when generating the whole page initially and after form submission. They are CakePHP elements.
 
 Easy installation:
 - Only a few commands are needed to install and run it locally. The example doesn't use a database
