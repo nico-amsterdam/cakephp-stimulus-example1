@@ -28,19 +28,24 @@ What the demo demonstrates:
 Easy installation:
 - Only a few commands are needed to install and run it locally. The example doesn't use a database
 
+
 Running Stimulus:
+
 Stimulus needs Node.js to build the resulting javascript file; stimulus_v1_0.js. When installing packages the Node Package Manager (NPM) creates a subdirectory `node_modules` with zillions of files. The good news is: these are only needed during development, not in production. 
 - Babel is used, so modern javascript can be used and is transpiled to support browsers.
 - Webpack is used to watch for saved changes in Stimulus controllers and update automatically the stimulus_v1_0.js file. With webpack and a stimulus helper we also don't need to register new controllers.
 
 Styling:
+
 - I took the css files from the [CakePHP Application Skeleton](https://github.com/cakephp/app) and only made additions to the style.css
 
 What are those hyphens/dashes in the controller names?
+
 - In the HTML / `Example1/index.ctp`, indeed the names of the referenced Stimulus controllers contain two dashes. I made subdirectories for common- and page-specific controllers, and / maps to -- in the [Stimulus filename to identifier mapping](https://stimulusjs.org/handbook/installing#controller-filenames-map-to-identifiers)
 
 SecurityComponent:
--- The CakePHP SecurityComponent is enabled. This gives a few challanges when used with client script code. The SecurityComponent rejects the submitted form data when fields are dynamically added or removed, hidden field values are changed, or a different form action url is used. Luckily these can selectively be unlocked, and this is happens in the beforeFilter of the Example1Controller.
+
+- The CakePHP SecurityComponent is enabled. This gives a few challanges when used with client script code. The SecurityComponent rejects the submitted form data when fields are dynamically added or removed, hidden field values are changed, or a different form action url is used. Luckily these can selectively be unlocked, and this is happens in the beforeFilter of the Example1Controller.
 - Don't bother to make funny remarks in the live demo, because the data is only stored in the session. That's why a src/Form/Example1Form extending App\Form is used; it contains the field definitions and form validation. If you use a database, you won't need this, because then you will have a model. Define the tables (following CakePHP naming conventions) in the database, including primary, foreign and unique keys, and let `cake bake all` generate all the initial code.
 
 Polyfills:
