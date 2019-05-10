@@ -130,7 +130,7 @@ or try the most recent version:
 `npm install -g npm@next`
 
 
-#### 2.5.3 Install Webpack, Babel, polyfills and Stimulus-starter
+### 2.5.3 Install Webpack, Babel, polyfills and Stimulus-starter
 
 Since NPM 5.7.0, install from lock-file only:
 ```bash
