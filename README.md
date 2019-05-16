@@ -145,7 +145,7 @@ Webpack can watch files and recompile whenever they change. Start the webpack wa
 ```bash
 npm start
 ```
-Write your Stimulus controllers in the `stimulus/controllers` directory.
+Write your Stimulus controllers in the `stimulus/controllers` directory. You can also use one of the available [Stimulus plugins](https://stimawesome.com)
 
 [More info](https://stimulusjs.org/handbook/introduction)
 
