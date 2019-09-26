@@ -1,20 +1,18 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Form\Example1Form $example1
+ * @var \App\Model\Entity\Contest $contest
  * @var string $dateType
  */
-
-$contest = $example1->getData('contest')
 
 ?>
  <div class="container" data-controller="example1--prize" id="prize-panel-div">
   <?php $number_of_prizes = $contest['number_of_prizes']; ?>
   <div class="formpanel prizes total<?= h($number_of_prizes) ?>prizes"> 
     <?php
-       echo $this->Form->control('contest.prize1', $number_of_prizes >= 1 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update', 'label' => __('First prize')]  : ['type' => 'hidden']);
-       echo $this->Form->control('contest.prize2', $number_of_prizes >= 2 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update','label' => __('Second prize')] : ['type' => 'hidden']);
-       echo $this->Form->control('contest.prize3', $number_of_prizes >= 3 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update', 'label' => __('Third prize')]  : ['type' => 'hidden']);
+       echo $this->Form->control('prize1', $number_of_prizes >= 1 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update', 'label' => __('First prize')]  : ['type' => 'hidden']);
+       echo $this->Form->control('prize2', $number_of_prizes >= 2 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update','label' => __('Second prize')] : ['type' => 'hidden']);
+       echo $this->Form->control('prize3', $number_of_prizes >= 3 ? ['required' => true, 'data-action' => 'keyup->example1--prize#update', 'label' => __('Third prize')]  : ['type' => 'hidden']);
     ?>
   </div>
   <?php if ($number_of_prizes >= 3): ?>

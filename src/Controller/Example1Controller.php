@@ -2,7 +2,7 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-use App\Form\Example1Form;
+use App\Table\ContestsTable;
 use Cake\Log\LogTrait;
 use Cake\Event\Event;
 use Cake\Http\Exception\UnauthorizedException;
@@ -10,28 +10,21 @@ use Cake\Http\Exception\UnauthorizedException;
 /**
  * Example1 Controller
  *
+ * @property \App\Model\Table\ContestsTable $Contests
  *
  */
 class Example1Controller extends AppController
 {
   use LogTrait;
 
-  private function getNewParticipant(int $index, int $dynnew = 0) {
+  private function getNewParticipant(int $dynnew = 0) {
     return [
-             'id' => $index,
              'name' => '',
              'email' => '',
              'date_of_birth' => '',
              'mark_for_deletion' => false,
              'dynnew' => $dynnew,  // dynamic new. true if participant is added by client-side code
            ];
-  }
-
-  /*
-   * @return \App\Form\Example1Form $example1
-   */
-  private function newExample1Form(int $number_of_participants, string $action) {
-     return new Example1Form(0, max(1,$number_of_participants), $action);
   }
 
   private function logRequestData(string $descr) {
@@ -53,9 +46,9 @@ class Example1Controller extends AppController
      $this->Security->setConfig('unlockedActions', ['prizeSnippet', 'addParticipantSnippet']);
 
      // These hidden fields can change, because 'prize_snippet' can make them editable:
-     $this->Security->setConfig('unlockedFields', ['contest.prize1', 'contest.prize2', 'contest.prize3']);
+     $this->Security->setConfig('unlockedFields', ['prize1', 'prize2', 'prize3']);
 
-     if (isset($this->request) && $this->request->is('post'))
+     if (isset($this->request) && $this->request->is(['post', 'put']))
      {
         if (!$this->getRequest()->getSession()->check('_Token')) {
            $expiredMsg = __('Your session has expired due to inactivity.');
@@ -68,79 +61,66 @@ class Example1Controller extends AppController
            return $this->redirect(['action' => 'index']);
         }
         $dateType = $this->getDateType();
-        $participants = $this->request->getData('contest.participants');
+        $participants = $this->request->getData('participants');
         $number_of_participants = count($participants);
-        $dynnew =     (int) $this->request->getData('contest.participants.0.dynnew');
+        $dynnew = 0;
 
         $unlockBefore = $this->Security->getConfig('unlockFields') ?? [];
         for ($i = 0; $i < $number_of_participants; $i++)
         {
             $dynnew = (int) $participants[$i]['dynnew'];
             if ($dynnew === 1) {
-              $unlockBefore[] = 'contest.participants.' . $i . '.name';
-              $unlockBefore[] = 'contest.participants.' . $i . '.email';
-              $unlockBefore[] = 'contest.participants.' . $i . '.date_of_birth';
-              $unlockBefore[] = 'contest.participants.' . $i . '.dynnew';
-              $unlockBefore[] = 'contest.participants.' . $i . '.mark_for_deletion';
+              $unlockBefore[] = 'participants.' . $i . '.id';
+              $unlockBefore[] = 'participants.' . $i . '.name';
+              $unlockBefore[] = 'participants.' . $i . '.email';
+              $unlockBefore[] = 'participants.' . $i . '.date_of_birth';
+              $unlockBefore[] = 'participants.' . $i . '.dynnew';
+              $unlockBefore[] = 'participants.' . $i . '.mark_for_deletion';
             }
         }
         $this->Security->setConfig('unlockedFields', $unlockBefore);
      }
   }
 
-  private function participantsAreNotNewAnymore(array $data) {
+  private function participantsAreNotNewAnymore($data) {
      $newParticipants = [];
-     $number_of_participants = count($this->request->getData('contest.participants'));
+     $number_of_participants = count($this->request->getData('participants'));
      if ($number_of_participants > 0) {
-        foreach ($data['contest']['participants'] as $key => $participant) {
+        foreach ($data['participants'] as $key => $participant) {
             $participant['dynnew'] = 0;
             $newParticipants[] = $participant;
         }
-        $data['contest']['participants'] = $newParticipants;
+        $data['participants'] = $newParticipants;
      }
      return $data;
   }
 
   /*
-   * @param array $data Data array.
-   * @return \App\Form\Example1Form $example1
+   * @param \App\Model\Entity\Contest contest.
+   * @return \App\Model\Entity\Contest contest
    */
-  private function deleteMarkedAndNewParticipants(array $data) {
-     $action = $this->request->getData('example1action');
-     $newParticipants = [];
-     $number_of_participants = count($this->request->getData('contest.participants'));
+  private function deleteMarkedParticipants($data, $contest) {
+     $number_of_participants = count($data['participants']);
+
      if ($number_of_participants > 0) {
-        foreach ($data['contest']['participants'] as $key => $participant) {
+        foreach ($data['participants'] as $key => $participant) {
            if ($participant['mark_for_deletion'] == 1) {
-              $number_of_participants -= 1;
-           } else {
-              $participant['id'] = count($newParticipants);
-              $newParticipants[] = $participant;
+              // delete participant
+              unset($data['participants'][$key]);
            }
         }
-        $data['contest']['participants'] = $newParticipants;
      }
-     if ($number_of_participants <= 0) {
-        // minimum one participant in the table. Add new record:
-        $data['contest']['participants'] = [ $this->getNewParticipant(0) ];
-        $number_of_participants = 1;
-     } else if ($action == 'addParticipant') {
-        $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants);
-        $number_of_participants += 1;
-     }
-     $example1 = $this->newExample1Form($number_of_participants, $action);
-     $example1->setData($data);
-     return $example1;
+     return $data;
   }
 
-  private function makeHiddenPrizesEmpty(array $data) {
-      $number_of_prizes = $data['contest']['number_of_prizes'];
+  private function makeHiddenPrizesEmpty($data) {
+      $number_of_prizes = $data['number_of_prizes'];
       if ($number_of_prizes < 3) {
-         $data['contest']['prize3'] = '';
+         $data['prize3'] = '';
          if ($number_of_prizes < 2) {
-            $data['contest']['prize2'] = '';
+            $data['prize2'] = '';
             if ($number_of_prizes < 1) {
-               $data['contest']['prize1'] = '';
+               $data['prize1'] = '';
             }
          }
       }
@@ -154,79 +134,108 @@ class Example1Controller extends AppController
    */
   public function index()
   {
-     if ($this->request->is('post')) {
-        $action = $this->request->getData('example1action');
-        $number_of_participants = count($this->request->getData('contest.participants'));
-        $example1 = $this->newExample1Form($number_of_participants, $action);
-        $example1->setData($this->request->getData());
-        $session = $this->getRequest()->getSession();
-        if ($example1->execute($this->request->getData())) {
-           if ($action == 'updateNoSave') {
-              $this->Flash->success(__('Succes!'));
-           }
-           $example1 = $this->deleteMarkedAndNewParticipants($example1->getData());
+     $this->loadModel('Contests');
+     $this->log('Tja' . ': ' . print_r($this->request->getData(), true), 'debug');
+     // $this->log('Tja2' . ': ' . $this->request->is(['post','put']) . '-'. $this->request->is(['get']), 'debug');
+     $contest = null;
+     $action = $this->request->getData('example1action');
+     $session = $this->getRequest()->getSession();
+
+     if ($this->request->is(['post', 'put'])) {
+         // fjfj
+        $id = 1;
+        $contest = $this->Contests->get($id, [
+            'contain' => ['Participants']
+        ]);
+
+
+         $origData = $this->request->getData();
+         $data = $this->deleteMarkedParticipants($origData, $contest);
+         $this->log('patch dit: ' . print_r($data, true), 'debug');
+         $contest = $this->Contests->patchEntity($contest, $data, [
+            'associated' => ['Participants']
+         ]);
+         $this->log('Validation errors 1: ' . print_r( $contest->getErrors(), true), 'debug');
+         $this->log('Save this 1 ' . print_r($contest, true), 'debug');
+         $save_contest = $this->makeHiddenPrizesEmpty($this->participantsAreNotNewAnymore($contest));
+         $this->log('Save this 2 ' . $save_contest, 'debug');
+
+         if ($this->Contests->save($save_contest)) {
+            $this->Flash->success(__('The contest has been saved.'));
+            $session->delete('contest');
+            $session->delete('data');
+            $session->write( 'action', $action);
+         } else {
+            // echo '<pre>' . print_r($contest->getErrors(), true) . '</pre>';
+            $this->Flash->error(__('The contest could not be saved. Please, try again.'));
+            //$origData->setErrors($contest->getErrors());
+            $session->write([ 'data' => $origData,
+                              'contest' => $contest,
+                              'action'  => $action,
+                           ]);
+            // $number_of_participants = count($contest['participants']);     
+            // $this->set('contest', $contest);
+            // $this->set('dateType', $this->getDateType());
+            // $this->set('autofocusIndex', (int) ($action == 'addParticipant' ? ($number_of_participants - 1) : -1));
+
+         }
+         // use post and redirect to avoid problems with browser-back button
+         return $this->redirect(['action' => 'index']);
+     } 
+     else if ($this->request->is('get')) 
+     {
+        if ($session->check('contest')) {
+            $contest = $session->read('contest');
+            if ($session->check('data')) {
+                $origData = $session->read('data');
+                $this->request = $this->request->withParsedBody($origData);
+
+                $this->log('Toon dit1: ' . print_r( $contest, true), 'debug');
+
+            }
+
+
         } else {
-           // echo '<pre>' . print_r($example1->getErrors(), true) . '</pre>';
-           // $this->log('Validation errors: ' . print_r( $example1->getErrors(), true), 'debug');
-           $this->Flash->error(__('There was a problem submitting your form.'));
+             $this->log('Toon dit niet: ' , 'debug');
+            $id = 1;
+            $contest = $this->Contests->get($id, [
+                'contain' => ['Participants']
+            ]);
         }
-        $session->write(['example1' => $this->makeHiddenPrizesEmpty($this->participantsAreNotNewAnymore($example1->getData()))
-                        ,'action' => $example1->getAction()
-                        ,'errors' => $example1->getErrors()
-                        ]);
-        // POST and redirect pattern; to make sure that the browser-back works.
-        return $this->redirect(['action' => 'index']);
-     }
-     if ($this->request->is('get')) {
-        $session = $this->getRequest()->getSession();
-        if ($session->check('example1')) {
-          $data = $session->read('example1');
-          $number_of_participants = count($data['contest']['participants']);
-          $example1 = $this->newExample1Form($number_of_participants, $session->read('action'));
-          $example1->setData($data);
-          $example1->setErrors($session->read('errors'));
-        } else {
-          $number_of_participants = 1;
-          $example1 = $this->newExample1Form($number_of_participants, 'init');
-          $example1->setData([
-             'contest' => [
-               'name' => '',
-               'number_of_prizes' => '1',
-               'prize1' => '',
-               'prize2' => '',
-               'prize3' => '',
-               'participants' => [
-                   $this->getNewParticipant(0)
-               ],
-              ],
-          ]);
-        }
+
+        $action  = $session->read('action');
+        $number_of_participants = count($contest['participants']);     
+        if ($number_of_participants <= 0) {
+            // minimum one participant in the table. Add new record:
+            $contest['participants'] = [ $this->getNewParticipant() ];
+            $number_of_participants = 1;
+        } else if ($action == 'addParticipant') {
+            $contest['participants'][] = $this->getNewParticipant();
+            $number_of_participants += 1;
+        }   
+        $this->set('contest', $contest);
         $this->set('dateType', $this->getDateType());
-        $this->set('example1', $example1);
-        $this->set('autofocusIndex', (int) ($example1->getAction() == 'addParticipant' ? ($number_of_participants - 1) : -1));
+        $this->set('autofocusIndex', (int) ($action == 'addParticipant' ? ($number_of_participants - 1) : -1));
      }
   }
 
   public function prizeSnippet() {
-     // $this->logRequestData('prizeSnippet');
+     $this->logRequestData('prizeSnippet');
      $requestData = $this->request->getData();
-     $example1 = $this->newExample1Form(0, 'updatePrizeRegion');
-     $example1->setData($requestData);
-     $this->set('example1', $example1);
+     $this->set('contest', $requestData);
      $this->render('/Element/Example1/Prize', 'ajax');
   }
 
   public function addParticipantSnippet() {
      // $this->logRequestData('addParticipantSnippet');
-     $number_of_participants = count($this->request->getData('contest.participants'));
-     $data = $this->request->getData();
+     $number_of_participants = count($this->request->getData('participants'));
+     $contest = $this->request->getData();
      // add new participant
-     $data['contest']['participants'][] = $this->getNewParticipant($number_of_participants++, 1);
-     $example1 = $this->newExample1Form($number_of_participants, 'addParticipant');
-     $example1->setData($data);
-     $this->request = $this->request->withParsedBody($data);
+     $number_of_participants++;
+     $contest['participants'][] = $this->getNewParticipant(1);
+     $this->request = $this->request->withParsedBody($contest);
      $this->set('dateType', $this->getDateType());
-     $this->set('example1', $example1);
+     $this->set('contest', $contest);
      $this->set('autofocusIndex', -1);
      $this->render('/Element/Example1/AddParticipant', 'ajax');
   }
@@ -240,7 +249,7 @@ class Example1Controller extends AppController
       $userAgent = $this->request->getHeaderLine('User-Agent');
       $isChrome = strpos($userAgent, 'Chrome/') !== false;
       $isSafari = !$isChrome && strpos($userAgent, 'Safari/')   !== false;
-      $isMacOS  = !$isChrome && strpos($userAgent, 'Macintosh') !== false;
+      $isMacOS  = strpos($userAgent, 'Macintosh') !== false;
       return $isMacOS && $isSafari;
   }
 

@@ -3,9 +3,14 @@
 A demo showing [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.org) 3.x working together.
 As example, it shows partial page rendering; replacing/adding server-side generated HTML snippets on the web page.
 
-[See it here](https://cakephp-stimulusjs.herokuapp.com)
+On this git branch, the database is enabled, and Entity and Table objects are used instead of a Form object.
+Change config/app.php to fill in your database settings.
+Create database tables with the config/schemas/contests.sql and participants.sql script.
+If you don't like table plural names, rename the tables and change entity.php
 
-Deploy it yourself: [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
+[See it here (without database)](https://cakephp-stimulusjs.herokuapp.com)
+
+Deploy it yourself (without database): [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
 ## 1.1 Why Stimulus
 
@@ -72,7 +77,7 @@ Fork my [github repository](https://github.com/nico-amsterdam/cakephp-stimulus-e
 ## 2.2 Clone/Fork this example project 
 
 ```bash
-git clone https://github.com/nico-amsterdam/cakephp-stimulus-example1
+git clone https://github.com/nico-amsterdam/cakephp-stimulus-example1 --branch db_example1 --single-branch
 ```
 
 and install the PHP packages:

@@ -1,10 +1,10 @@
 <?php
 /**
- * @var \App\Form\Example1Form $example1
+ * @var \App\Model\Entity\Contest $contest
  * @var string $dateType
  */
 
- $participants = $example1->getData('contest.participants');
+ $participants = $contest['participants'];
  echo $this->element('Example1/ContestParticipants', [
    "participants" => $participants,
    "participants_offset" => (count($participants) - 1),

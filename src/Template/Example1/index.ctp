@@ -1,7 +1,7 @@
 <?php
 /**
  * @var \App\View\AppView $this
- * @var \App\Form\Example1Form $example1
+ * @var \App\Model\Entity\Contest $contest
  * @var string $dateType
  */
 
@@ -15,7 +15,7 @@ $updatePrizeRegionUrl = $this->Url->build('/example1/prize_snippet',           [
 $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', []);
 
 ?>
-<?= $this->Form->create($example1) ?>
+<?= $this->Form->create($contest) ?>
 <nav class="example1 large-3 medium-4 columns" id="actions-sidebar">
     <!-- ul class="side-nav">
         <li class="heading"><?= __('Actions') ?>
@@ -30,13 +30,15 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
     <fieldset>
         <legend><?= __('Edit contest') ?></legend>
         <?php
-          echo $this->Form->control('contest.name', [
-          'required' => true,
-          'label' => __('Contest name'),
-        ]);?>
+          echo $this->Form->control('name', [
+            'required' => true,
+            'label' => __('Contest name'),
+          ]);
+          echo $this->Form->control('id', ['type' => 'hidden']);
+        ?>
         <div id="prize-panel" data-controller="common--loader" data-common--loader-url1="<?= $updatePrizeRegionUrl ?>"> 
           <?php
-            echo $this->Form->control('contest.number_of_prizes', [
+            echo $this->Form->control('number_of_prizes', [
               'required' => true,
               'type' => 'select', 
               'label' => __('Number of prizes'),
@@ -62,7 +64,7 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
             <tbody id="tbody" data-target="common--loader.output1">
                 <?php
                   echo $this->element('Example1/ContestParticipants', [
-                    "participants" => $example1->getData('contest.participants'),
+                    "participants" => $contest['participants'],
                     "participants_offset" => 0,
                   ]);
                 ?>
