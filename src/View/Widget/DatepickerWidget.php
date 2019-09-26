@@ -18,13 +18,17 @@ class DatepickerWidget implements WidgetInterface
 
    public function render(array $data, ContextInterface $context)
    {
+      $val = $data['val'];
+      $date = (($val === null or is_string($val)) ? $val : $val->format('Y-m-d'));
       $data += [
          'name'  => '',
-         'value' => $data['val'], // or $context->val($data['name']); Example '2018-02-27'
+         'value' => $date   // Example: 2018-12-31
       ];
+      $excludedAttributeNames = ['name', 'type', 'val'];
+      $formattedAttributes = $this->_templates->formatAttributes($data, $excludedAttributeNames);
       return $this->_templates->format('datepicker', [
          'name' => $data['name'],
-         'attrs' => $this->_templates->formatAttributes($data, ['name', 'type', 'val'])
+         'attrs' => $formattedAttributes
       ]);
    }
 
