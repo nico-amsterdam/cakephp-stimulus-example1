@@ -5,13 +5,13 @@ export default class extends Controller {
 
   update(event) {
     let source = event.currentTarget;
-    if (source && source.id === 'contest-prize1' && this.hasOut1Target) {
+    if (source && source.id === 'prize1' && this.hasOut1Target) {
        this.out1Target.textContent = source.value;
     }
-    if (source && source.id === 'contest-prize2' && this.hasOut2Target) {
+    if (source && source.id === 'prize2' && this.hasOut2Target) {
        this.out2Target.textContent = source.value;
     }
-    if (source && source.id === 'contest-prize3' && this.hasOut3Target) {
+    if (source && source.id === 'prize3' && this.hasOut3Target) {
        this.out3Target.textContent = source.value;
     }
   }
