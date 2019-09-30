@@ -40,8 +40,11 @@ class Example1Controller extends AppController
 
   public function beforeFilter(Event $event)
   {
+        $this->logRequestData('beforeFilter');
+   
      parent::beforeFilter($event);
-
+        $this->logRequestData('beforeFilter2');
+   
      // Enable POST to /example1/prize_snippet and /example1/add_participant_snippet:
      $this->Security->setConfig('unlockedActions', ['prizeSnippet', 'addParticipantSnippet']);
 
@@ -156,11 +159,18 @@ class Example1Controller extends AppController
             'associated' => ['Participants']
          ]);
          $this->log('Validation errors 1: ' . print_r( $contest->getErrors(), true), 'debug');
-         $this->log('Save this 1 ' . print_r($contest, true), 'debug');
-         $save_contest = $this->makeHiddenPrizesEmpty($this->participantsAreNotNewAnymore($contest));
-         $this->log('Save this 2 ' . $save_contest, 'debug');
+         $this->log('Validation errors 2: ' . count( $contest->getErrors()), 'debug');
+         
 
-         if ($this->Contests->save($save_contest)) {
+         // set dynnew 0
+         $this->participantsAreNotNewAnymore($contest);
+        
+         // remove prizes that are not shown anymore
+         $this->makeHiddenPrizesEmpty($contest);
+
+         $this->log('Save this 1 ' . print_r($contest, true), 'debug');         
+
+         if ($this->Contests->save($contest)) {
             $this->Flash->success(__('The contest has been saved.'));
             $session->delete('contest');
             $session->delete('data');
