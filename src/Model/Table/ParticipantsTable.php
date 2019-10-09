@@ -109,10 +109,10 @@ class ParticipantsTable extends Table
         //             'rule' => 'boolean'
         //         ]);
 
-        $validator
-            ->add('dynnew', 'boolean', [
-                    'rule' => 'boolean'
-                ]);
+        // $validator
+        //     ->add('dynnew', 'boolean', [
+        //             'rule' => 'boolean'
+        //         ]);
 
         return $validator;
     }

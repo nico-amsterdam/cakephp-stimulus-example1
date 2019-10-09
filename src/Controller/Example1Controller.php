@@ -40,10 +40,9 @@ class Example1Controller extends AppController
 
   public function beforeFilter(Event $event)
   {
-        $this->logRequestData('beforeFilter');
+     // $this->logRequestData('beforeFilter');
    
      parent::beforeFilter($event);
-        $this->logRequestData('beforeFilter2');
    
      // Enable POST to /example1/prize_snippet and /example1/add_participant_snippet:
      $this->Security->setConfig('unlockedActions', ['prizeSnippet', 'addParticipantSnippet']);
@@ -86,16 +85,10 @@ class Example1Controller extends AppController
   }
 
   private function participantsAreNotNewAnymore($data) {
-     $newParticipants = [];
-     $number_of_participants = count($this->request->getData('participants'));
-     if ($number_of_participants > 0) {
-        foreach ($data['participants'] as $key => $participant) {
-            $participant['dynnew'] = 0;
-            $newParticipants[] = $participant;
-        }
-        $data['participants'] = $newParticipants;
-     }
-     return $data;
+      foreach ($data['participants'] as $key => $participant) {
+          $data['participants'][$key]['dynnew'] = 0;
+      }     
+      return $data;
   }
 
   /*
@@ -138,8 +131,6 @@ class Example1Controller extends AppController
   public function index()
   {
      $this->loadModel('Contests');
-     $this->log('Tja' . ': ' . print_r($this->request->getData(), true), 'debug');
-     // $this->log('Tja2' . ': ' . $this->request->is(['post','put']) . '-'. $this->request->is(['get']), 'debug');
      $contest = null;
      $action = $this->request->getData('example1action');
      $session = $this->getRequest()->getSession();
@@ -154,21 +145,12 @@ class Example1Controller extends AppController
 
          $origData = $this->request->getData();
          $data = $this->deleteMarkedParticipants($origData, $contest);
-         $this->log('patch dit: ' . print_r($data, true), 'debug');
          $contest = $this->Contests->patchEntity($contest, $data, [
             'associated' => ['Participants']
          ]);
-         $this->log('Validation errors 1: ' . print_r( $contest->getErrors(), true), 'debug');
-         $this->log('Validation errors 2: ' . count( $contest->getErrors()), 'debug');
-         
-
-         // set dynnew 0
-         $this->participantsAreNotNewAnymore($contest);
         
          // remove prizes that are not shown anymore
-         $this->makeHiddenPrizesEmpty($contest);
-
-         $this->log('Save this 1 ' . print_r($contest, true), 'debug');         
+         $contest = $this->makeHiddenPrizesEmpty($contest);
 
          if ($this->Contests->save($contest)) {
             $this->Flash->success(__('The contest has been saved.'));
@@ -178,8 +160,10 @@ class Example1Controller extends AppController
          } else {
             // echo '<pre>' . print_r($contest->getErrors(), true) . '</pre>';
             $this->Flash->error(__('The contest could not be saved. Please, try again.'));
+
             //$origData->setErrors($contest->getErrors());
-            $session->write([ 'data' => $origData,
+            $noDynnew = $this->participantsAreNotNewAnymore($origData);
+            $session->write([ 'data' => $noDynnew,
                               'contest' => $contest,
                               'action'  => $action,
                            ]);
@@ -199,14 +183,8 @@ class Example1Controller extends AppController
             if ($session->check('data')) {
                 $origData = $session->read('data');
                 $this->request = $this->request->withParsedBody($origData);
-
-                $this->log('Toon dit1: ' . print_r( $contest, true), 'debug');
-
             }
-
-
         } else {
-             $this->log('Toon dit niet: ' , 'debug');
             $id = 1;
             $contest = $this->Contests->get($id, [
                 'contain' => ['Participants']
@@ -222,7 +200,7 @@ class Example1Controller extends AppController
         } else if ($action == 'addParticipant') {
             $contest['participants'][] = $this->getNewParticipant();
             $number_of_participants += 1;
-        }   
+        }
         $this->set('contest', $contest);
         $this->set('dateType', $this->getDateType());
         $this->set('autofocusIndex', (int) ($action == 'addParticipant' ? ($number_of_participants - 1) : -1));
@@ -230,7 +208,7 @@ class Example1Controller extends AppController
   }
 
   public function prizeSnippet() {
-     $this->logRequestData('prizeSnippet');
+     // $this->logRequestData('prizeSnippet');
      $requestData = $this->request->getData();
      $this->set('contest', $requestData);
      $this->render('/Element/Example1/Prize', 'ajax');
