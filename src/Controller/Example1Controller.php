@@ -153,9 +153,8 @@ class Example1Controller extends AppController
 
          // remove prizes that are not shown anymore
          $contest = $this->makeHiddenPrizesEmpty($contest);
-         $contest_after_removal = $contest;
 
-         $contest_after_removal = $this->deleteMarkedParticipants($contest_after_removal, $origData);
+         $contest_after_removal = $this->deleteMarkedParticipants($contest, $origData);
 
          if ($this->Contests->save($contest_after_removal)) {
             $this->Flash->success(__('The contest has been saved.'));
