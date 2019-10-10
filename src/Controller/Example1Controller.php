@@ -93,20 +93,23 @@ class Example1Controller extends AppController
 
   /*
    * @param \App\Model\Entity\Contest contest.
+   * @param data.
    * @return \App\Model\Entity\Contest contest
    */
-  private function deleteMarkedParticipants($data, $contest) {
+  private function deleteMarkedParticipants($contest, $data) {
      $number_of_participants = count($data['participants']);
+     $participants = [];
 
      if ($number_of_participants > 0) {
-        foreach ($data['participants'] as $key => $participant) {
-           if ($participant['mark_for_deletion'] == 1) {
-              // delete participant
-              unset($data['participants'][$key]);
+        foreach ($contest['participants'] as $key => $participant) {
+           if ($data['participants'][$key]['mark_for_deletion'] != 1) {
+               $participants[] = $contest['participants'][$key];
            }
         }
      }
-     return $data;
+     $newContest = clone $contest;
+     $newContest['participants'] = $participants;
+     return $newContest;
   }
 
   private function makeHiddenPrizesEmpty($data) {
@@ -136,23 +139,25 @@ class Example1Controller extends AppController
      $session = $this->getRequest()->getSession();
 
      if ($this->request->is(['post', 'put'])) {
-         // fjfj
+
         $id = 1;
-        $contest = $this->Contests->get($id, [
+        $origContest = $this->Contests->get($id, [
             'contain' => ['Participants']
         ]);
 
-
          $origData = $this->request->getData();
-         $data = $this->deleteMarkedParticipants($origData, $contest);
-         $contest = $this->Contests->patchEntity($contest, $data, [
+
+         $contest = $this->Contests->patchEntity($origContest, $origData, [
             'associated' => ['Participants']
          ]);
-        
+
          // remove prizes that are not shown anymore
          $contest = $this->makeHiddenPrizesEmpty($contest);
+         $contest_after_removal = $contest;
 
-         if ($this->Contests->save($contest)) {
+         $contest_after_removal = $this->deleteMarkedParticipants($contest_after_removal, $origData);
+
+         if ($this->Contests->save($contest_after_removal)) {
             $this->Flash->success(__('The contest has been saved.'));
             $session->delete('contest');
             $session->delete('data');
@@ -163,8 +168,8 @@ class Example1Controller extends AppController
 
             //$origData->setErrors($contest->getErrors());
             $noDynnew = $this->participantsAreNotNewAnymore($origData);
-            $session->write([ 'data' => $noDynnew,
-                              'contest' => $contest,
+            $session->write([ 'data'    => $noDynnew,
+                              'contest' => $origContest,
                               'action'  => $action,
                            ]);
             // $number_of_participants = count($contest['participants']);     

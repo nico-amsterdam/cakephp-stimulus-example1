@@ -71,7 +71,7 @@ class ParticipantsTable extends Table
             ->scalar('name')
             ->maxLength('name', 50)
             ->allowEmptyString('name', function ($context) {
-                 $this->log('CONTEXT ' . print_r($context['data'], true), 'debug');
+                 // $this->log('CONTEXT ' . print_r($context['data'], true), 'debug');
                  return (!isset($context['data']['mark_for_deletion']) || $context['data']['mark_for_deletion'] == 1); 
               })
             // ->notEmpty('name', __('A participant name is required'), function($context) {
