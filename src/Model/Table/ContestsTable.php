@@ -84,7 +84,7 @@ class ContestsTable extends Table
             ->scalar('prize2')
             ->maxLength('prize2', 255)
             ->allowEmptyString('prize2')
-            ->notEmpty('prize2', __('First prize is required'), function($context) {
+            ->notEmpty('prize2', __('Second prize is required'), function($context) {
                 return ($context['data']['number_of_prizes'] >= 2); 
               });
 
@@ -92,7 +92,7 @@ class ContestsTable extends Table
             ->scalar('prize3')
             ->maxLength('prize3', 255)
             ->allowEmptyString('prize3')
-            ->notEmpty('prize3', __('First prize is required'), function($context) {
+            ->notEmpty('prize3', __('Third prize is required'), function($context) {
                 return ($context['data']['number_of_prizes'] >= 3); 
               });
 
