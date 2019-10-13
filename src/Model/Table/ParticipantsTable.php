@@ -52,6 +52,10 @@ class ParticipantsTable extends Table
         ]);
     }
 
+    public function whenNotMarkedForDeletion($context) {
+        return (!isset($context['data']['mark_for_deletion']) || $context['data']['mark_for_deletion'] != 1);        
+    }
+
     /**
      * Default validation rules.
      *
@@ -60,6 +64,8 @@ class ParticipantsTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+        $whenNotMarkedForDeletionFunc = [$this, 'whenNotMarkedForDeletion'];
+        // requirePresence: uses array_key_exists, so null/empty is ok as well. 
         $validator
             ->requirePresence(['id', 'name', 'email', 'date_of_birth']);
 
@@ -70,22 +76,33 @@ class ParticipantsTable extends Table
         $validator
             ->scalar('name')
             ->maxLength('name', 50)
-            ->allowEmptyString('name', function ($context) {
-                 // $this->log('CONTEXT ' . print_r($context['data'], true), 'debug');
-                 return (!isset($context['data']['mark_for_deletion']) || $context['data']['mark_for_deletion'] == 1); 
-              })
-            // ->notEmpty('name', __('A participant name is required'), function($context) {
-            //      return !($context['data']['mark_for_deletion'] == 1); 
-            //   })
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->add('name',
+                'notBlank', [ // check if field contains more than whitespaces
+                    'rule' => 'notBlank',
+                    'message' => __('A participant name is required'),
+                    'on' =>  $whenNotMarkedForDeletionFunc,
+            ])
+            ->add('name', 'unique', [
+                'rule' => 'validateUnique', 
+                'message' => __('This participant name has already been used'),
+                'provider' => 'table',
+                'on' =>  $whenNotMarkedForDeletionFunc,
+            ]);
 
         $validator
-            ->email('email')
-            ->allowEmptyString('email')
-            ->add('email', 'format', [
-                     'rule' => 'email',
-                     'message' => __('A valid email address is required'),
-                ]);
+            ->email('email', false, __('A valid email address is required'), $whenNotMarkedForDeletionFunc)
+            ->add('email',
+                'notBlank', [ // check if field contains more than whitespaces
+                    'rule' => 'notBlank',
+                    'message' => __('An email address is required'),
+                    'on' =>  $whenNotMarkedForDeletionFunc,
+            ])
+            ->add('email', 'unique', [
+                'rule' => 'validateUnique', 
+                'message' => __('This email address has already been used'),
+                'provider' => 'table',
+                'on' =>  $whenNotMarkedForDeletionFunc,
+            ]);
 
         $validator
             ->date('date_of_birth')
@@ -97,22 +114,18 @@ class ParticipantsTable extends Table
                         }
                         $year = gettype($value) === 'string' ? date_create($value)->format('Y') : ((int) $value['year']);
                         $nowYear = date('Y');
-                        // $this->log('COMPARE '. $year . ' with ' . $nowYear, 'debug');
-
                         return $year >= $nowYear - 120 && $year <= $nowYear - 4;
                     },
                     'message' => __('Enter a valid date of birth'),
                 ]);
 
-        // $validator
-        //     ->add('mark_for_deletion', 'boolean', [
-        //             'rule' => 'boolean'
-        //         ]);
+        $validator
+            ->boolean('mark_for_deletion')
+            ->allowEmptyString('mark_for_deletion');
 
-        // $validator
-        //     ->add('dynnew', 'boolean', [
-        //             'rule' => 'boolean'
-        //         ]);
+        $validator
+            ->boolean('dynnew')
+            ->allowEmptyString('dynnew');
 
         return $validator;
     }
