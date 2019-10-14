@@ -4,11 +4,13 @@ A demo showing [Stimulus](https://stimulusjs.org) and [CakePHP](https://cakephp.
 As example, it shows partial page rendering; replacing/adding server-side generated HTML snippets on the web page.
 
 On this git branch, the database is enabled, and Entity and Table objects are used instead of a Form object.
-Change config/app.php to fill in your database settings.
-Create database tables with the config/schemas/contests.sql and participants.sql script.
-If you don't like table plural names, rename the tables and change entity.php
+Create config/app.php based on app.default.php to fill in your database settings (change 'username', 'password', 'database' and 'salt').
+Create database, user and tables. Scripts are provided for MariaDB. In de config/schema directory run:
+`mysql -u root -p < example1.sql`
+Or create database tables in an existing database with the config/schema/contests.sql and participants.sql scripts.
+If you don't fancy plural table names; rename the tables and change the table names inside the php files in the src/Model/Table/ directory.
 
-[See it here (without database)](https://cakephp-stimulusjs.herokuapp.com)
+[See the example here (without database)](https://cakephp-stimulusjs.herokuapp.com)
 
 Deploy it yourself (without database): [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
