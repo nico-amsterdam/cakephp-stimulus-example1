@@ -36,12 +36,11 @@ class AppView extends View
      */
     public function initialize()
     {
-      $this->loadHelper('Form', [
-        'templates' => 'app_form',
-        'widgets' => [
-          'datepicker' => ['Datepicker']
-        ]
-      ]);
-      // $this->loadHelper('Example1');
+        $this->loadHelper('Form', [
+          'templates' => 'app_form',
+          'widgets' => [
+            'datepicker' => ['Datepicker']
+          ]
+        ]);
     }
 }

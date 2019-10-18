@@ -9,7 +9,6 @@ use Cake\Validation\Validator;
 use Cake\Validation\Validation;
 use Cake\Log\LogTrait;
 
-
 /**
  * Participants Model
  *
@@ -28,7 +27,7 @@ use Cake\Log\LogTrait;
  */
 class ParticipantsTable extends Table
 {
-  use LogTrait;
+    use LogTrait;
     
     /**
      * Initialize method
@@ -52,8 +51,9 @@ class ParticipantsTable extends Table
         ]);
     }
 
-    public function whenNotMarkedForDeletion($context) {
-        return (!isset($context['data']['mark_for_deletion']) || $context['data']['mark_for_deletion'] != 1);        
+    public function whenNotMarkedForDeletion($context)
+    {
+        return (!isset($context['data']['mark_for_deletion']) || $context['data']['mark_for_deletion'] != 1);
     }
 
     /**
@@ -65,25 +65,28 @@ class ParticipantsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $whenNotMarkedForDeletionFunc = [$this, 'whenNotMarkedForDeletion'];
-        // requirePresence: uses array_key_exists, so null/empty is ok as well. 
+        // requirePresence: uses array_key_exists, so null/empty is ok as well.
         $validator
             ->requirePresence(['id', 'name', 'email', 'date_of_birth']);
 
         $validator
             ->integer('id')
-            ->allowEmptyString('id',  __('Id is required'), 'create');
+            ->allowEmptyString('id', __('Id is required'), 'create');
 
         $validator
             ->scalar('name')
             ->maxLength('name', 50)
-            ->add('name',
-                'notBlank', [ // check if field contains more than whitespaces
+            ->add(
+                'name',
+                'notBlank',
+                [ // check if field contains more than whitespaces
                     'rule' => 'notBlank',
                     'message' => __('A participant name is required'),
                     'on' =>  $whenNotMarkedForDeletionFunc,
-            ])
+            ]
+            )
             ->add('name', 'unique', [
-                'rule' => 'validateUnique', 
+                'rule' => 'validateUnique',
                 'message' => __('This participant name has already been used'),
                 'provider' => 'table',
                 'on' =>  $whenNotMarkedForDeletionFunc,
@@ -91,14 +94,17 @@ class ParticipantsTable extends Table
 
         $validator
             ->email('email', false, __('A valid email address is required'), $whenNotMarkedForDeletionFunc)
-            ->add('email',
-                'notBlank', [ // check if field contains more than whitespaces
+            ->add(
+                'email',
+                'notBlank',
+                [ // check if field contains more than whitespaces
                     'rule' => 'notBlank',
                     'message' => __('An email address is required'),
                     'on' =>  $whenNotMarkedForDeletionFunc,
-            ])
+            ]
+            )
             ->add('email', 'unique', [
-                'rule' => 'validateUnique', 
+                'rule' => 'validateUnique',
                 'message' => __('This email address has already been used'),
                 'provider' => 'table',
                 'on' =>  $whenNotMarkedForDeletionFunc,

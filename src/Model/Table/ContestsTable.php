@@ -56,48 +56,40 @@ class ContestsTable extends Table
     {
         $validator
             ->integer('id')
-            ->allowEmptyString('id',  __('Id is required'), 'create');
+            ->allowEmptyString('id', __('Id is required'), 'create');
 
         $validator
             ->scalar('name')
             ->maxLength('name', 50)
             ->requirePresence('name')
-            // ->allowEmptyString('name', false)
             ->notEmpty('name', __('A contest name is required'))
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->integer('number_of_prizes')
             ->requirePresence('number_of_prizes')
-            // ->allowEmptyString('number_of_prizes', false)
             ->notEmpty('number_of_prizes', __('Number of prizes is required'));
 
         $validator
             ->scalar('prize1')
             ->maxLength('prize1', 255)
-            // ->allowEmptyString('prize1')
-            ->notEmpty('prize1', __('First prize is required'), function($context) {
-                return ($context['data']['number_of_prizes'] >= 1); 
-              });
+            ->notEmpty('prize1', __('First prize is required'), function ($context) {
+                return ($context['data']['number_of_prizes'] >= 1);
+            });
 
         $validator
             ->scalar('prize2')
             ->maxLength('prize2', 255)
-            // ->allowEmptyString('prize2')
-            ->notEmpty('prize2', __('Second prize is required'), function($context) {
-                return ($context['data']['number_of_prizes'] >= 2); 
-              });
+            ->notEmpty('prize2', __('Second prize is required'), function ($context) {
+                return ($context['data']['number_of_prizes'] >= 2);
+            });
 
         $validator
             ->scalar('prize3')
             ->maxLength('prize3', 255)
-            // ->allowEmptyString('prize3')
-            ->notEmpty('prize3', __('Third prize is required'), function($context) {
-                return ($context['data']['number_of_prizes'] >= 3); 
-              });
-
-        // addNestedMany('participants', $this->getParticipantValidator());
-
+            ->notEmpty('prize3', __('Third prize is required'), function ($context) {
+                return ($context['data']['number_of_prizes'] >= 3);
+            });
 
         return $validator;
     }
