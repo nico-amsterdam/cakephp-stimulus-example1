@@ -100,10 +100,6 @@ class Example1Form extends Form
            notEmpty('name', __('A participant name is required'), function($context) {
                return !($context['data']['mark_for_deletion'] == 1); 
            })->
-           allowEmptyString('name', function ($context) {
-               // $this->log('CONTEXT '. print_r($context['data'], true), 'debug');
-               return ($context['data']['mark_for_deletion'] == 1); 
-           })->
            allowEmptyString('email')->
            add('email', 'format', [
              'rule' => 'email',
