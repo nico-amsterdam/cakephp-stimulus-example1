@@ -99,6 +99,26 @@ class Example1Controller extends AppController
     /*
      * @param \App\Model\Entity\Contest contest.
      * @param data.
+     * @return array of participant id's
+     */
+    private function getMarkedForDeletionParticipantKeys($contest, $data)
+    {
+        $number_of_participants = count($data['participants']);
+        $participantsKeys = [];
+
+        if ($number_of_participants > 0) {
+            foreach ($contest['participants'] as $key => $participant) {
+                if ($data['participants'][$key]['mark_for_deletion'] == 1) {
+                    $participantsKeys[] = $data['participants'][$key]['id'];
+                }
+            }
+        }
+        return $participantsKeys;
+    }
+
+    /*
+     * @param \App\Model\Entity\Contest contest.
+     * @param data.
      * @return \App\Model\Entity\Contest contest
      */
     private function deleteMarkedParticipants($contest, $data)
@@ -160,8 +180,19 @@ class Example1Controller extends AppController
             // remove prizes that are not shown anymore
             $contest = $this->makeHiddenPrizesEmpty($contest);
 
+            $remove_keys = $this->getMarkedForDeletionParticipantKeys($contest, $origData);
+    
             $contest_after_removal = $this->deleteMarkedParticipants($contest, $origData);
 
+            // saveStrategy is append, so we must explicitly delete participants
+            // who are marked for deletion
+            if (count($remove_keys) > 0) {
+               $this->Contests->Participants->deleteAll([
+                  'contest_id' => $id,
+                  'id IN' => $remove_keys
+               ]);
+            }
+            // save the rest
             if ($this->Contests->save($contest_after_removal)) {
                 $this->Flash->success(__('The contest has been saved.'));
                 $session->delete('contest');

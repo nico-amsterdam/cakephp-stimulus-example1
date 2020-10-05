@@ -42,7 +42,7 @@ class ContestsTable extends Table
 
         $this->hasMany('Participants', [
             'foreignKey' => 'contest_id',
-            'saveStrategy' => 'replace' // want to be able to delete
+            'saveStrategy' => 'append' // merge participants entered and saved by other users
         ]);
     }
 
