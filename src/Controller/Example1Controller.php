@@ -161,19 +161,20 @@ class Example1Controller extends AppController
     public function index()
     {
         $this->loadModel('Contests');
+        $contestsTable = $this->Contests;
         $contest = null;
         $action = $this->request->getData('example1action');
         $session = $this->getRequest()->getSession();
 
         if ($this->request->is(['post', 'put'])) {
             $id = 1;
-            $origContest = $this->Contests->get($id, [
+            $origContest = $contestsTable->get($id, [
                'contain' => ['Participants']
             ]);
 
             $origData = $this->request->getData();
 
-            $contest = $this->Contests->patchEntity($origContest, $origData, [
+            $contest = $contestsTable->patchEntity($origContest, $origData, [
                'associated' => ['Participants']
             ]);
 
@@ -184,16 +185,20 @@ class Example1Controller extends AppController
     
             $contest_after_removal = $this->deleteMarkedParticipants($contest, $origData);
 
-            // saveStrategy is append, so we must explicitly delete participants
-            // who are marked for deletion
-            if (count($remove_keys) > 0) {
-               $this->Contests->Participants->deleteAll([
-                  'contest_id' => $id,
-                  'id IN' => $remove_keys
-               ]);
-            }
+            $succes = false;
+            $contestsTable->getConnection()->transactional(function () use ($contestsTable, $contest_after_removal, $id, $remove_keys, &$succes) {
+                // saveStrategy is append, so we must explicitly delete participants
+                // who are marked for deletion
+                if (count($remove_keys) > 0) {
+                    $contestsTable->Participants->deleteAll([
+                    'contest_id' => $id,
+                    'id IN' => $remove_keys
+                    ]);
+                } 
+                $succes = $contestsTable->save($contest_after_removal, ['atomic' => false]);
+            });
             // save the rest
-            if ($this->Contests->save($contest_after_removal)) {
+            if ($succes) {
                 $this->Flash->success(__('The contest has been saved.'));
                 $session->delete('contest');
                 $session->delete('data');
@@ -219,7 +224,7 @@ class Example1Controller extends AppController
                 }
             } else {
                 $id = 1;
-                $contest = $this->Contests->get($id, [
+                $contest = $contestsTable->get($id, [
                    'contain' => ['Participants']
                 ]);
             }
