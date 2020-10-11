@@ -7,6 +7,9 @@ As example, it shows partial page rendering; replacing/adding server-side genera
 
 Deploy it yourself: [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/nico-amsterdam/cakephp-stimulus-example1)
 
+Note that there is a [branch](https://github.com/nico-amsterdam/cakephp-stimulus-example1/tree/db_example1) of this demo using mysql/mariadb.
+
+
 ## 1.1 Why Stimulus
 
 What Stimulus does can be done with other javascript libraries as well, but what I like is:
@@ -46,7 +49,7 @@ What are those hyphens/dashes in the controller names?
 SecurityComponent:
 
 - The CakePHP SecurityComponent is enabled. This gives a few challanges when used with client script code. The SecurityComponent rejects the submitted form data when fields are dynamically added or removed, hidden field values are changed, or a different form action url is used. Luckily these can selectively be unlocked, and this is happens in the beforeFilter of the Example1Controller.
-- Don't bother to make funny remarks in the live demo, because the data is only stored in the session. That's why a src/Form/Example1Form extending App\Form is used; it contains the field definitions and form validation. If you use a database, you won't need this, because then you will have a model. Define the tables (following CakePHP naming conventions) in the database, including primary, foreign and unique keys, and let `cake bake all` generate all the initial code.
+- Don't bother to make funny remarks in the live demo, because the data is only stored in the session. That's why a src/Form/Example1Form extending App\Form is used; it contains the field definitions and form validation. If you use a database, you won't need this, because then you will have a model. See this [branch](https://github.com/nico-amsterdam/cakephp-stimulus-example1/tree/db_example1). Tip: define the tables (following CakePHP naming conventions) in the database, including primary, foreign and unique keys, and let `cake bake all` generate all the initial code.
 
 Polyfills:
 - To support Internet Explorer 11, the [Stimulus polyfill](https://stimulusjs.org/handbook/installing#browser-support) is used.
