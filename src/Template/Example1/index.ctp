@@ -31,7 +31,6 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
         <legend><?= __('Edit contest') ?></legend>
         <?php
           echo $this->Form->control('name', [
-            'required' => true,
             'label' => __('Contest name'),
           ]);
           echo $this->Form->control('id', ['type' => 'hidden']);
@@ -39,7 +38,6 @@ $addParticipantUrl    = $this->Url->build('/example1/add_participant_snippet', [
         <div id="prize-panel" data-controller="common--loader" data-common--loader-url1="<?= $updatePrizeRegionUrl ?>"> 
           <?php
             echo $this->Form->control('number_of_prizes', [
-              'required' => true,
               'type' => 'select', 
               'label' => __('Number of prizes'),
               'options' => [0,1,2,3],
