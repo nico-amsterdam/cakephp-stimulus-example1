@@ -62,6 +62,16 @@ class ParticipantsTableTest extends TestCase
     }
 
     /**
+     * Test whenNotMarkedForDeletion method
+     *
+     * @return void
+     */
+    public function testWhenNotMarkedForDeletion()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
      * Test validationDefault method
      *
      * @return void
@@ -77,6 +87,16 @@ class ParticipantsTableTest extends TestCase
      * @return void
      */
     public function testBuildRules()
+    {
+        $this->markTestIncomplete('Not implemented yet.');
+    }
+
+    /**
+     * Test log method
+     *
+     * @return void
+     */
+    public function testLog()
     {
         $this->markTestIncomplete('Not implemented yet.');
     }

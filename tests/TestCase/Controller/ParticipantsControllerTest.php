@@ -7,6 +7,8 @@ use Cake\TestSuite\TestCase;
 
 /**
  * App\Controller\ParticipantsController Test Case
+ *
+ * @uses \App\Controller\ParticipantsController
  */
 class ParticipantsControllerTest extends TestCase
 {

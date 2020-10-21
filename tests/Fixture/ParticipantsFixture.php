@@ -19,7 +19,7 @@ class ParticipantsFixture extends TestFixture
         'contest_id' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'name' => ['type' => 'string', 'length' => 50, 'null' => false, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         'email' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'collate' => 'utf8mb4_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
-        'date_of_birth' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'date_of_birth' => ['type' => 'date', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'created' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'modified' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_indexes' => [
@@ -49,9 +49,9 @@ class ParticipantsFixture extends TestFixture
                 'contest_id' => 1,
                 'name' => 'Lorem ipsum dolor sit amet',
                 'email' => 'Lorem ipsum dolor sit amet',
-                'date_of_birth' => '2019-06-13 21:55:43',
-                'created' => '2019-06-13 21:55:43',
-                'modified' => '2019-06-13 21:55:43'
+                'date_of_birth' => '2020-10-21',
+                'created' => '2020-10-21 15:04:09',
+                'modified' => '2020-10-21 15:04:09'
             ],
         ];
         parent::init();

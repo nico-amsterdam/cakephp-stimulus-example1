@@ -10,7 +10,7 @@ use Cake\ORM\Entity;
  * @property int $contest_id
  * @property string $name
  * @property string|null $email
- * @property \Cake\I18n\FrozenTime|null $date_of_birth
+ * @property \Cake\I18n\FrozenDate|null $date_of_birth
  * @property \Cake\I18n\FrozenTime|null $created
  * @property \Cake\I18n\FrozenTime|null $modified
  *
