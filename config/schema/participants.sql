@@ -7,6 +7,7 @@ CREATE TABLE participants (
  created DATETIME,
  modified DATETIME,
  UNIQUE KEY contest_name_uniq (contest_id, name),
+ UNIQUE KEY contest_email_uniq (contest_id, email), 
  FOREIGN KEY contest_fk (contest_id) REFERENCES contests(id)
 ) CHARSET=utf8mb4;
 
