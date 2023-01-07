@@ -12,14 +12,14 @@
     "@babel/plugin-proposal-class-properties": "^7.2.3",
     "@babel/preset-env": "^7.2.3",
     "@stimulus/polyfills": "^1.1.1",
-    "babel-loader": "^8.0.5",
+    "babel-loader": "^8.3.0",
     "stimulus": "^1.1.1",
-    "webpack": "^4.29.5",
+    "webpack": "^5.75.0",
     "webpack-dev-middleware": "^3.4.0",
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
     "compression-webpack-plugin": "^10.0.0",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^5.0.1"
   }
 }
